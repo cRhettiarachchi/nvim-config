@@ -90,6 +90,8 @@ require('lazy').setup {
   -- Extras
   require 'plugins.snacks',
   require 'plugins.leet-code',
+  require 'plugins.todo-comments',
+  require 'plugins.inc-rename',
 }
 
 require('everforest').load()
