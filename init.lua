@@ -2,6 +2,20 @@ require 'core.options' -- Load general options
 require 'core.keymaps' -- Load general keymaps
 require 'core.snippets' -- Custom code snippets
 
+-- Optional startup profiling (uncomment to enable profiling)
+-- vim.loader.enable()  -- Use bytecode cache for faster startup
+-- vim.g.profile_startup = true
+-- if vim.g.profile_startup then
+--   local startuptime = vim.fn.reltime()
+--   vim.api.nvim_create_autocmd("UIEnter", {
+--     once = true,
+--     callback = function()
+--       local elapsed = vim.fn.reltimestr(vim.fn.reltime(startuptime))
+--       print(string.format("Neovim loaded in %ss", elapsed))
+--     end,
+--   })
+-- end
+
 -- Set up the Lazy plugin manager
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -41,28 +55,43 @@ end, { desc = 'Reload All Buffers if Not Modified' })
 
 -- Set up plugins
 require('lazy').setup {
+  -- Core UI components
+  require 'plugins.colortheme',
+  require 'plugins.alpha',
+  require 'plugins.lualine',
   require 'plugins.neotree',
   require 'plugins.bufferline',
-  require 'plugins.lualine',
+  require 'plugins.indent-blankline',
+
+  -- Core functionality
   require 'plugins.treesitter',
   require 'plugins.telescope',
-  require 'plugins.lsp',
+
+  -- Development tools - JS/TS focused
+  require 'plugins.lsp', -- Language servers with web-first priority
   require 'plugins.autocompletion',
   require 'plugins.none-ls',
-  require 'plugins.gitsigns',
-  require 'plugins.alpha',
-  require 'plugins.indent-blankline',
-  require 'plugins.misc',
-  require 'plugins.comment',
-  require 'plugins.neotest',
-  require 'plugins.tabout',
   require 'plugins.eslint-nvim',
   require 'plugins.nvim-ts-autotag',
+
+  -- Git integration
+  require 'plugins.gitsigns',
+
+  -- Editor enhancements
+  require 'plugins.misc',
+  require 'plugins.comment',
+  require 'plugins.tabout',
+  require 'plugins.flash',
+  require 'plugins.neo-clip',
+
+  -- Testing tools
+  require 'plugins.neotest',
+
+  -- Extras
   require 'plugins.snacks',
   require 'plugins.leet-code',
-  require 'plugins.neo-clip',
-  require 'plugins.colortheme',
-  require 'plugins.flash',
+  require 'plugins.todo-comments',
+  require 'plugins.inc-rename',
 }
 
 require('everforest').load()
