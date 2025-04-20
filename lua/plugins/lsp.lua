@@ -184,45 +184,28 @@ return {
     --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
     --  - settings (table): Override the default settings passed when initializing the server.
     --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-    local servers = {
-      -- clangd = {},
-      -- gopls = {},
-      -- pyright = {},
-      -- rust_analyzer = {},
-      -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-      --
-      -- Some languages (like typescript) have entire language plugins that can be useful:
-      --    https://github.com/pmizio/typescript-tools.nvim
-      --
-      -- But for many setups, the LSP (`tsserver`) will work just fine
-      ts_ls = {}, -- tsserver is deprecated
-      ruff = {},
-      pylsp = {
-        settings = {
-          pylsp = {
-            plugins = {
-              pyflakes = { enabled = false },
-              pycodestyle = { enabled = false },
-              autopep8 = { enabled = false },
-              yapf = { enabled = false },
-              mccabe = { enabled = false },
-              pylsp_mypy = { enabled = false },
-              pylsp_black = { enabled = false },
-              pylsp_isort = { enabled = false },
-            },
-          },
-        },
+    
+    -- Define core web development LSPs and other LSPs
+    local core_web_lsps = {
+      -- JavaScript/TypeScript - high priority
+      ts_ls = {
+        priority = 1000, -- High priority for TS/JS
       },
-      html = { filetypes = { 'html', 'twig', 'hbs' } },
-      cssls = {},
-      tailwindcss = {},
-      dockerls = {},
-      sqlls = {},
-      terraformls = {},
-      jsonls = {},
-      yamlls = {},
-
+      
+      -- HTML/CSS/Tailwind - high priority
+      html = { 
+        filetypes = { 'html', 'twig', 'hbs' },
+        priority = 950,
+      },
+      cssls = { priority = 950 },
+      tailwindcss = { priority = 950 },
+      
+      -- JSON - medium-high priority
+      jsonls = { priority = 900 },
+      
+      -- Lua for config files - medium priority
       lua_ls = {
+        priority = 800,
         -- cmd = {...},
         -- filetypes = { ...},
         -- capabilities = {},
@@ -247,6 +230,35 @@ return {
         },
       },
     }
+    
+    -- Lower priority LSPs that can be lazy-loaded
+    local additional_lsps = {
+      ruff = { priority = 600 },
+      pylsp = {
+        priority = 500,
+        settings = {
+          pylsp = {
+            plugins = {
+              pyflakes = { enabled = false },
+              pycodestyle = { enabled = false },
+              autopep8 = { enabled = false },
+              yapf = { enabled = false },
+              mccabe = { enabled = false },
+              pylsp_mypy = { enabled = false },
+              pylsp_black = { enabled = false },
+              pylsp_isort = { enabled = false },
+            },
+          },
+        },
+      },
+      dockerls = { priority = 400 },
+      sqlls = { priority = 400 },
+      terraformls = { priority = 300 },
+      yamlls = { priority = 300 },
+    }
+    
+    -- Combine the LSP tables
+    local servers = vim.tbl_deep_extend("force", core_web_lsps, additional_lsps)
 
     -- Ensure the servers and tools above are installed
     --  To check the current status of installed tools and/or manually install

@@ -132,7 +132,7 @@ return {
     vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
     vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
     vim.keymap.set('n', '<leader>gs', require('telescope.builtin').git_status, { desc = 'Telescope: Git Status (changed files)' })
-    vim.keymap.set('n', '<leader>ggs', '<cmd>GrepChanged<cr>', { desc = 'Live Grep in Changed Files' })
+    vim.keymap.set('n', '<leader>gsg', '<cmd>GrepChanged<cr>', { desc = 'Live Grep in Changed Files' })
     vim.keymap.set('n', '<leader>gx', GrepByExtension, { desc = 'Live Grep by file extension' })
 
     vim.keymap.set('n', '<leader>se', function()
