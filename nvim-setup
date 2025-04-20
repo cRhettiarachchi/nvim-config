@@ -1,0 +1,232 @@
+#!/usr/bin/env bash
+
+# nvim-setup
+# Script to set up Neovim configuration with all dependencies
+
+set -e  # Exit on error
+
+echo "=== Setting up Neovim configuration ==="
+echo "This script will install Neovim, required dependencies, and set up the configuration."
+
+# Check if running as root, which we don't want
+if [ "$(id -u)" -eq 0 ]; then
+  echo "Please do not run this script as root or with sudo"
+  exit 1
+fi
+
+# Detect operating system
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  OS="macos"
+  echo "Detected macOS"
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  OS="linux"
+  echo "Detected Linux"
+else
+  echo "Unsupported operating system: $OSTYPE"
+  exit 1
+fi
+
+install_macos_deps() {
+  echo "Installing dependencies with Homebrew..."
+  
+  # Install Homebrew if not installed
+  if ! command -v brew &> /dev/null; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
+  
+  # Install dependencies
+  brew install neovim
+  brew install ripgrep
+  brew install fd
+  brew install jq
+  brew install git
+
+  # Install fonts
+  echo "Installing Nerd Font..."
+  brew tap homebrew/cask-fonts
+  brew install --cask font-hack-nerd-font
+}
+
+install_linux_deps() {
+  echo "Installing dependencies on Linux..."
+  
+  # Detect package manager
+  if command -v apt &> /dev/null; then
+    # Ubuntu/Debian
+    sudo apt update
+    sudo apt install -y neovim ripgrep fd-find jq git curl unzip
+    
+    # Install latest Neovim
+    echo "Installing latest Neovim..."
+    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+    sudo tar -C /opt -xzf nvim-linux64.tar.gz
+    sudo ln -sf /opt/nvim-linux64/bin/nvim /usr/local/bin/nvim
+    rm nvim-linux64.tar.gz
+    
+  elif command -v dnf &> /dev/null; then
+    # Fedora
+    sudo dnf install -y neovim ripgrep fd-find jq git curl
+  elif command -v pacman &> /dev/null; then
+    # Arch Linux
+    sudo pacman -Syu neovim ripgrep fd jq git
+  else
+    echo "Unsupported Linux distribution. Please install dependencies manually."
+    exit 1
+  fi
+  
+  # Install Nerd Font
+  echo "Installing Nerd Font..."
+  mkdir -p ~/.local/share/fonts
+  curl -fLo ~/.local/share/fonts/Hack.zip https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.zip
+  unzip -o ~/.local/share/fonts/Hack.zip -d ~/.local/share/fonts/
+  rm ~/.local/share/fonts/Hack.zip
+  fc-cache -fv
+}
+
+install_dependencies() {
+  if [[ "$OS" == "macos" ]]; then
+    install_macos_deps
+  elif [[ "$OS" == "linux" ]]; then
+    install_linux_deps
+  fi
+}
+
+setup_nvim_config() {
+  echo "Setting up Neovim configuration..."
+  
+  # Create config directories
+  mkdir -p ~/.config/nvim/lua/core
+  mkdir -p ~/.config/nvim/lua/plugins
+  mkdir -p ~/.config/nvim/spell
+  
+  # Backup existing configuration if it exists
+  if [ -f ~/.config/nvim/init.lua ]; then
+    echo "Backing up existing configuration..."
+    mv ~/.config/nvim ~/.config/nvim.backup.$(date +%Y%m%d%H%M%S)
+    mkdir -p ~/.config/nvim/lua/core
+    mkdir -p ~/.config/nvim/lua/plugins
+    mkdir -p ~/.config/nvim/spell
+  fi
+  
+  # Clone the configuration
+  echo "Cloning configuration files..."
+  
+  # Clone Lazy.nvim (plugin manager)
+  LAZY_PATH="${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/lazy/lazy.nvim
+  if [ ! -d "$LAZY_PATH" ]; then
+    echo "Installing lazy.nvim..."
+    git clone --filter=blob:none --branch=stable https://github.com/folke/lazy.nvim.git "$LAZY_PATH"
+  fi
+  
+  # Copy current config files to the new setup
+  cp -r "$PWD"/* ~/.config/nvim/
+  cp -r "$PWD"/.[^.]* ~/.config/nvim/ 2>/dev/null || true  # Copy hidden files too
+  
+  echo "Neovim configuration files installed successfully!"
+}
+
+install_language_servers() {
+  echo "Installing language servers and formatters..."
+  
+  # Create a temporary init file to install Mason packages
+  TEMP_INIT_FILE=$(mktemp)
+  
+  cat > "$TEMP_INIT_FILE" << 'EOF'
+vim.cmd([[
+  let g:mason_install_packages = [
+    "typescript-language-server",
+    "ruff",
+    "python-lsp-server",
+    "html-lsp",
+    "css-lsp",
+    "tailwindcss-language-server",
+    "dockerfile-language-server",
+    "sql-language-server",
+    "terraform-ls",
+    "json-lsp",
+    "yaml-language-server",
+    "lua-language-server",
+    "stylua",
+    "prettier",
+    "shfmt",
+    "checkmake",
+    "ruff",
+    "codespell",
+    "cspell"
+  ]
+
+  autocmd User MasonToolsUpdateCompleted quitall
+]])
+
+-- Set up the Lazy plugin manager
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "--branch=stable",
+    lazyrepo,
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+require("lazy").setup({
+  {
+    "williamboman/mason.nvim",
+    config = function()
+      require("mason").setup()
+    end,
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    config = function() 
+      require("mason-lspconfig").setup()
+    end,
+  },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    config = function()
+      require("mason-tool-installer").setup({
+        ensure_installed = vim.g.mason_install_packages,
+        auto_update = true,
+        run_on_start = true,
+      })
+    end,
+  }
+})
+EOF
+
+  # Run Neovim with the temporary init file to install packages
+  nvim --headless -u "$TEMP_INIT_FILE" -c "autocmd User MasonToolsInstallCompleted quitall" -c "MasonToolsInstall" || true
+  
+  # Remove the temporary init file
+  rm "$TEMP_INIT_FILE"
+  
+  echo "Language servers and formatters installed successfully!"
+}
+
+final_instructions() {
+  echo ""
+  echo "=== Setup Complete ==="
+  echo "Neovim and all dependencies have been installed!"
+  echo ""
+  echo "Next steps:"
+  echo "1. Start Neovim by typing 'nvim'"
+  echo "2. On first startup, plugins will be installed automatically"
+  echo "3. Treesitter parsers will be installed on first use"
+  echo ""
+  echo "NOTE: For full functionality, please ensure your terminal is using a Nerd Font"
+  echo "      (Hack Nerd Font was installed during this setup)"
+}
+
+# Main installation process
+install_dependencies
+setup_nvim_config
+install_language_servers
+final_instructions
+
+exit 0
