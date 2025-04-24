@@ -184,25 +184,25 @@ return {
     --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
     --  - settings (table): Override the default settings passed when initializing the server.
     --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-    
+
     -- Define core web development LSPs and other LSPs
     local core_web_lsps = {
       -- JavaScript/TypeScript - high priority
       ts_ls = {
         priority = 1000, -- High priority for TS/JS
       },
-      
+
       -- HTML/CSS/Tailwind - high priority
-      html = { 
+      html = {
         filetypes = { 'html', 'twig', 'hbs' },
         priority = 950,
       },
       cssls = { priority = 950 },
       tailwindcss = { priority = 950 },
-      
+
       -- JSON - medium-high priority
       jsonls = { priority = 900 },
-      
+
       -- Lua for config files - medium priority
       lua_ls = {
         priority = 800,
@@ -230,7 +230,7 @@ return {
         },
       },
     }
-    
+
     -- Lower priority LSPs that can be lazy-loaded
     local additional_lsps = {
       ruff = { priority = 600 },
@@ -256,9 +256,9 @@ return {
       terraformls = { priority = 300 },
       yamlls = { priority = 300 },
     }
-    
+
     -- Combine the LSP tables
-    local servers = vim.tbl_deep_extend("force", core_web_lsps, additional_lsps)
+    local servers = vim.tbl_deep_extend('force', core_web_lsps, additional_lsps)
 
     -- Ensure the servers and tools above are installed
     --  To check the current status of installed tools and/or manually install

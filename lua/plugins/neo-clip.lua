@@ -7,13 +7,14 @@ return {
   config = function()
     require('neoclip').setup {
       history = 100,
+      default_register = { '"', '+' },
       on_select = {
-        -- Set this to true to ensure the selected entry is set as the current register
-        set_reg = true,
         -- Move entry to front of the list for easy access next time
         move_to_front = true,
         -- Close telescope after selection
         close_telescope = true,
+        -- Set this to true to ensure the selected entry is set as the current register
+        set_reg = true,
       },
       keys = {
         telescope = {
