@@ -76,6 +76,8 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 
 vim.keymap.set('n', '<leader>cd', ':%bd | e# | bd#<CR>', opts)
 
+vim.keymap.set('n', '<leader>of', ':!open -R %<CR>', opts)
+
 vim.keymap.set('n', '<leader>nr', ':set relativenumber<CR>', opts)
 
 vim.keymap.set('n', '<leader>i', function()
@@ -83,5 +85,3 @@ vim.keymap.set('n', '<leader>i', function()
   vim.o.smartcase = vim.o.ignorecase -- Enable smartcase only when ignorecase is on
   print('ignorecase: ' .. tostring(vim.o.ignorecase) .. ', smartcase: ' .. tostring(vim.o.smartcase))
 end, { desc = 'Toggle ignorecase + smartcase' })
-
-
