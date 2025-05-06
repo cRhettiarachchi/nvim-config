@@ -92,6 +92,7 @@ require('lazy').setup {
   require 'plugins.leet-code',
   require 'plugins.todo-comments',
   require 'plugins.inc-rename',
+  require 'plugins.nnn',
 }
 
 require('everforest').load()
