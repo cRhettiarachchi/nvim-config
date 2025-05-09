@@ -80,6 +80,12 @@ vim.keymap.set('n', '<leader>of', ':!open -R %<CR>', opts)
 
 vim.keymap.set('n', '<leader>nr', ':set relativenumber<CR>', opts)
 
+vim.keymap.set('n', '<leader>cp', function()
+  local path = vim.fn.expand '%:p:h'
+  vim.fn.setreg('+', path)
+  print('Copied to clipboard: ' .. path)
+end, { desc = 'Copy current file directory to clipboard' })
+
 vim.keymap.set('n', '<leader>i', function()
   vim.o.ignorecase = not vim.o.ignorecase
   vim.o.smartcase = vim.o.ignorecase -- Enable smartcase only when ignorecase is on
