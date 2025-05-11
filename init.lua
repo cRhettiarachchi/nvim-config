@@ -56,7 +56,8 @@ end, { desc = 'Reload All Buffers if Not Modified' })
 -- Set up plugins
 require('lazy').setup {
   -- Core UI components
-  require 'plugins.colortheme',
+  -- require 'plugins.colortheme',
+  -- require 'plugins.cool-night',
   require 'plugins.alpha',
   require 'plugins.lualine',
   require 'plugins.neotree',
@@ -95,6 +96,7 @@ require('lazy').setup {
   require 'plugins.nnn',
 }
 
-require('everforest').load()
+require('plugins.cool-night').setup()
+-- require('everforest').load()
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
