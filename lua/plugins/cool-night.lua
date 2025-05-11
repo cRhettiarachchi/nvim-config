@@ -4,7 +4,7 @@
 local M = {}
 
 local colors = {
-  bg = '#011423',
+  bg = 'NONE',
   fg = '#CBE0F0',
   cursor = '#47FF9C',
   black = '#214969',
