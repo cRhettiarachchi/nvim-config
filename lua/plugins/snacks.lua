@@ -17,7 +17,7 @@ return {
   keys = {
     -- File Search
     {
-      '<leader>ff',
+      '<leader>sf',
       function()
         Snacks.picker.files()
       end,
@@ -28,7 +28,9 @@ return {
     {
       '<leader>sg',
       function()
-        Snacks.picker.grep()
+        Snacks.picker.grep {
+          command = { 'rg', '--vimgrep', '--smart-case', '--word-regexp' },
+        }
       end,
       desc = 'Grep',
     },
@@ -36,6 +38,14 @@ return {
       '<leader>sw',
       function()
         Snacks.picker.grep_word()
+      end,
+      desc = 'Grep Word',
+      mode = { 'n', 'x' },
+    },
+    {
+      '<leader>sr',
+      function()
+        Snacks.picker.resume()
       end,
       desc = 'Grep Word',
       mode = { 'n', 'x' },
@@ -62,15 +72,6 @@ return {
         Snacks.picker.diagnostics_buffer()
       end,
       desc = 'Buffer Diagnostics',
-    },
-
-    -- Terminal
-    {
-      "<c-'>",
-      function()
-        Snacks.terminal()
-      end,
-      desc = 'Toggle Terminal',
     },
     {
       '<c-_>',
@@ -104,7 +105,6 @@ return {
       end,
       desc = 'Lazygit',
     },
-    -- Bookmark
     {
       '<leader>fp',
       function()
