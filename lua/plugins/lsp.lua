@@ -86,38 +86,9 @@ return {
         --  Most Language Servers support renaming across files, etc.
         map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
 
-        local function rename_folder()
-          -- Prompt user for old/new folder names
-          local old_folder = vim.fn.input 'Old folder name: '
-          local new_folder = vim.fn.input 'New folder name: '
-
-          if old_folder == '' or new_folder == '' then
-            print 'Invalid folder names. Operation canceled.'
-            return
-          end
-
-          -- 1) Rename (move) the folder in the file system
-          -- Be aware this uses `mv`—on Windows you'll need something like `ren`.
-          local cmd = string.format('mv %s %s', old_folder, new_folder)
-          vim.fn.system(cmd)
-
-          -- 2) Replace all occurrences in *all open buffers* of the old folder name with the new one
-          -- If you want to do it across the entire project, you might do something more advanced
-          -- like :bufdo, or a :grep-like approach. But here's a simple approach on open buffers:
-          for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-            if vim.api.nvim_buf_is_loaded(bufnr) then
-              vim.api.nvim_buf_call(bufnr, function()
-                vim.cmd(string.format('%%s/%s/%s/g', old_folder, new_folder))
-                vim.cmd 'write'
-              end)
-            end
-          end
-
-          print("Renamed folder and updated references (in open buffers) from '" .. old_folder .. "' to '" .. new_folder .. "'. お疲れ様です！")
-        end
-
-        -- Now map it (similar style to how you mapped <leader>rn):
-        vim.keymap.set('n', '<leader>rf', rename_folder, { desc = '[R]ename [F]older' })
+        -- NOTE: removed the experimental `rename_folder` helper which performed
+        -- blanket replacements across all open buffers. The functionality was
+        -- prone to destructive changes and has been taken out for now.
 
         -- Execute a code action, usually your cursor needs to be on top of an error
         -- or a suggestion from your LSP for this to activate.
