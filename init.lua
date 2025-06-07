@@ -97,6 +97,12 @@ require('lazy').setup {
 }
 
 -- require('plugins.cool-night').setup()
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = 'everforest',
+  callback = function()
+    vim.api.nvim_set_hl(0, 'Cursor', { fg = '#000000', bg = '#FFD700' })
+  end,
+})
 require('everforest').load()
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
