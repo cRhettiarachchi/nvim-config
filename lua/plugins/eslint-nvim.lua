@@ -17,30 +17,6 @@ return {
 
   config = function()
     local nvim_eslint = require 'nvim-eslint'
-
-    local function is_eslint_9(bufnr)
-      local root = vim.fs.root(bufnr, { 'package.json', '.git' })
-      if not root then
-        return false
-      end
-
-      local cmd = 'cd ' .. root .. ' && npx --no -- eslint -v'
-      local handle = io.popen(cmd)
-      if not handle then
-        return false
-      end
-
-      local result = handle:read '*a'
-      handle:close()
-
-      if result == nil then
-        return false
-      end
-
-      local major = tonumber(result:match 'v(%d+)%.') or 0
-      return major >= 9
-    end
-
     nvim_eslint.setup {
       debug = false,
       settings = {
