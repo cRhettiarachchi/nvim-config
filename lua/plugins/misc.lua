@@ -5,6 +5,9 @@ return {
     'christoomey/vim-tmux-navigator',
   },
   {
+    'github/copilot.vim',
+  },
+  {
     -- Detect tabstop and shiftwidth automatically
     'tpope/vim-sleuth',
   },
