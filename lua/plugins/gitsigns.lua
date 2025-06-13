@@ -1,20 +1,27 @@
 -- Adds git related signs to the gutter, as well as utilities for managing changes
 return {
   'lewis6991/gitsigns.nvim',
-  opts = {
-    signs = {
-      add = { text = '+' },
-      change = { text = '~' },
-      delete = { text = '_' },
-      topdelete = { text = '‾' },
-      changedelete = { text = '~' },
-    },
-    signs_staged = {
-      add = { text = '+' },
-      change = { text = '~' },
-      delete = { text = '_' },
-      topdelete = { text = '‾' },
-      changedelete = { text = '~' },
-    },
-  },
+  event = { 'BufReadPre', 'BufNewFile' },
+  config = function()
+    require('gitsigns').setup {
+      signs = {
+        add = { text = '┃' },
+        change = { text = '┃' },
+        delete = { text = '_' },
+        topdelete = { text = '‾' },
+        changedelete = { text = '~' },
+      },
+      current_line_blame = true, -- ← inline blame like `git blame`
+      current_line_blame_opts = {
+        delay = 300,
+        virt_text_pos = 'eol',
+      },
+      signcolumn = true, -- show signs in the gutter
+    }
+
+    vim.keymap.set('n', '<leader>gp', ':Gitsigns preview_hunk<CR>')
+    vim.keymap.set('n', '<leader>gs', ':Gitsigns stage_hunk<CR>')
+    vim.keymap.set('n', '<leader>gu', ':Gitsigns undo_stage_hunk<CR>')
+    vim.keymap.set('n', '<leader>gb', ':Gitsigns toggle_current_line_blame<CR>')
+  end,
 }

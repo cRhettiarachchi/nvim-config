@@ -94,7 +94,6 @@ require('lazy').setup {
   require 'plugins.todo-comments',
   require 'plugins.inc-rename',
   require 'plugins.nnn',
-  require 'plugins.git-signs',
 }
 
 -- require('plugins.cool-night').setup()
