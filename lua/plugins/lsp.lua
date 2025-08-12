@@ -15,35 +15,27 @@ return {
     'hrsh7th/cmp-nvim-lsp',
   },
   config = function()
-    vim.api.nvim_set_keymap('n', '<leader>mi', '', {
-      noremap = true,
-      callback = function()
-        vim.lsp.buf.code_action {
-          -- only run the addMissingImports action
-          context = {
-            only = { 'source.addMissingImports', 'source.organizeImports' },
-            diagnostics = {}, -- ignore diagnostics filter
-          },
-          apply = true, -- apply immediately
-        }
-      end,
-      desc = 'Add all missing imports',
-    })
+    vim.keymap.set('n', '<leader>mi', function()
+      vim.lsp.buf.code_action {
+        -- only run the addMissingImports action
+        context = {
+          only = { 'source.addMissingImports', 'source.organizeImports' },
+          diagnostics = {}, -- ignore diagnostics filter
+        },
+        apply = true, -- apply immediately
+      }
+    end, { desc = 'Add all missing imports' })
 
     -- map <leader>mu (Missing Unused) to remove all unused imports via ESLint
-    vim.api.nvim_set_keymap('n', '<leader>mu', '', {
-      noremap = true,
-      callback = function()
-        vim.lsp.buf.code_action {
-          context = {
-            only = { 'source.fixAll.eslint' },
-            diagnostics = {},
-          },
-          apply = true,
-        }
-      end,
-      desc = 'Remove all unused imports via ESLint',
-    })
+    vim.keymap.set('n', '<leader>mu', function()
+      vim.lsp.buf.code_action {
+        context = {
+          only = { 'source.fixAll.eslint' },
+          diagnostics = {},
+        },
+        apply = true,
+      }
+    end, { desc = 'Remove all unused imports via ESLint' })
     -- Brief aside: **What is LSP?**
     --
     -- LSP is an initialism you've probably heard, but might not understand what it is.
