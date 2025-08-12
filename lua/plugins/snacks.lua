@@ -81,22 +81,6 @@ return {
       desc = 'which_key_ignore',
     },
 
-    -- Zen Mode
-    {
-      '<leader>z',
-      function()
-        Snacks.zen()
-      end,
-      desc = 'Toggle Zen Mode',
-    },
-    {
-      '<leader>Z',
-      function()
-        Snacks.zen.zoom()
-      end,
-      desc = 'Toggle Zoom',
-    },
-
     -- Lazygit
     {
       '<leader>gg',

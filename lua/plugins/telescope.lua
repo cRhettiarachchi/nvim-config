@@ -44,6 +44,7 @@ return {
 
     -- [[ Configure Telescope ]]
     -- See `:help telescope` and `:help telescope.setup()`
+
     require('telescope').setup {
       -- You can put your default mappings / updates / etc. in here
       --  All the info you're looking for is in `:help telescope.setup()`
@@ -104,21 +105,64 @@ return {
     pcall(require('telescope').load_extension, 'fzf')
     pcall(require('telescope').load_extension, 'ui-select')
 
-    function GrepByExtension()
-      vim.ui.input({ prompt = 'Enter file extension (e.g. tsx, js, py): ' }, function(ext)
-        if ext == nil or ext == '' then
-          print '検索中止！No extension provided.'
+    function GrepLiteral()
+      vim.ui.input({ prompt = 'Paste search text (literal): ' }, function(term)
+        if not term or term == '' then
+          print '検索中止！Nothing pasted.'
           return
         end
 
         require('telescope.builtin').live_grep {
-          prompt_title = 'Grep in *.' .. ext .. ' files',
+          prompt_title = 'Literal Grep (No Regex)',
+          default_text = term,
           additional_args = function()
-            return { '--glob', '*.' .. ext }
+            return { '-F' } -- this disables regex, treats everything literally
           end,
         }
       end)
     end
+
+    -- This searches the word with include and exlude files
+    function GrepWithFilters()
+      local input = vim.ui.input
+      local telescope = require 'telescope.builtin'
+
+      input({ prompt = 'Search term: ' }, function(term)
+        if not term or term == '' then
+          print '検索中止！No search term.'
+          return
+        end
+
+        input({ prompt = 'Include globs (comma-separated): ' }, function(include_input)
+          input({ prompt = 'Exclude globs (comma-separated): ' }, function(exclude_input)
+            local args = {}
+
+            -- Include patterns
+            if include_input and include_input ~= '' then
+              for pattern in string.gmatch(include_input, '([^,]+)') do
+                table.insert(args, '--glob=' .. pattern)
+              end
+            end
+
+            -- Exclude patterns
+            if exclude_input and exclude_input ~= '' then
+              for pattern in string.gmatch(exclude_input, '([^,]+)') do
+                table.insert(args, '--glob=!' .. pattern)
+              end
+            end
+
+            telescope.live_grep {
+              prompt_title = 'Custom Grep',
+              default_text = term,
+              additional_args = function()
+                return args
+              end,
+            }
+          end)
+        end)
+      end)
+    end
+
     -- See `:help telescope.builtin`
     local builtin = require 'telescope.builtin'
     vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
@@ -132,7 +176,8 @@ return {
     vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
     vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
     vim.keymap.set('n', '<leader>gs', require('telescope.builtin').git_status, { desc = 'Telescope: Git Status (changed files)' })
-    vim.keymap.set('n', '<leader>gx', GrepByExtension, { desc = 'Live Grep by file extension' })
+    vim.keymap.set('n', '<leader>gx', GrepWithFilters, { desc = 'Grep with include/exclude globs' })
+    vim.keymap.set('n', '<leader>gl', GrepLiteral, { desc = 'Literal (no escape) grep' })
 
     vim.keymap.set('n', '<leader>se', function()
       require('telescope.builtin').live_grep {

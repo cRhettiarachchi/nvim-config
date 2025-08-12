@@ -63,6 +63,7 @@ require('lazy').setup {
   require 'plugins.neotree',
   require 'plugins.bufferline',
   require 'plugins.indent-blankline',
+  require 'plugins.nvim-ufo',
 
   -- Core functionality
   require 'plugins.treesitter',
@@ -87,6 +88,7 @@ require('lazy').setup {
 
   -- Testing tools
   require 'plugins.neotest',
+  require 'plugins.copilot-chat',
 
   -- Extras
   require 'plugins.snacks',
@@ -96,7 +98,43 @@ require('lazy').setup {
   require 'plugins.nnn',
 }
 
+vim.keymap.set('n', '<leader>cc', ':CopilotChatToggle<CR>', { desc = 'Toggle Copilot Chat' })
+
+vim.keymap.set('v', '<leader>cc', function()
+  -- Get visual selection
+  local selection = vim.fn.getreg '"'
+
+  -- Prompt for additional context
+  vim.ui.input({ prompt = 'What do you want to ask Copilot?' }, function(user_input)
+    -- Combine both and send to Copilot
+    local full_prompt = selection
+    if user_input and user_input ~= '' then
+      full_prompt = selection .. '\n\n' .. user_input
+    end
+    require('CopilotChat').ask(full_prompt)
+  end)
+end, { desc = 'Ask CopilotChat with context', noremap = true, silent = true })
+
+vim.g.copilot_no_tab_map = true
+vim.api.nvim_set_keymap('i', '<C-J>', 'copilot#Accept("<CR>")', {
+  expr = true,
+  silent = true,
+  noremap = true,
+})
+
 -- require('plugins.cool-night').setup()
-require('everforest').load()
--- The line beneath this is called `modeline`. See `:help modeline`
+-- require('everforest').load()
+-- Enable true color
+vim.opt.termguicolors = true
+
+-- Set colorscheme
+vim.g.edge_style = 'aura' -- or any style you want
+vim.cmd.colorscheme 'edge'
+
+-- Define custom highlight colors for normal and inactive windows
+vim.api.nvim_set_hl(0, 'NormalNC', { bg = '#232530' }) -- active
+vim.opt.cursorline = true
+vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#2e3240' }) -- lighter than #262a36
+vim.api.nvim_set_hl(0, 'DiagnosticError', { fg = '#ff5f5f', underline = true })
+vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true, sp = '#ff5f5f' })
 -- vim: ts=2 sts=2 sw=2 et

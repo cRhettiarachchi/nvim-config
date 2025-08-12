@@ -142,3 +142,6 @@ vim.keymap.set('n', '<leader>mh', function()
   vim.api.nvim_set_current_win(cur_win)
   vim.api.nvim_set_current_buf(left_buf)
 end, { desc = 'Swap buffer with left pane' })
+
+-- Telescope
+vim.keymap.set('n', '<leader>b', '<cmd>Telescope buffers<CR>', { desc = 'List buffers' })
