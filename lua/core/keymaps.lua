@@ -43,7 +43,7 @@ vim.keymap.set('n', '<leader>x', function()
 
   -- Count the number of listed buffers
   local listed = vim.tbl_filter(function(buf)
-    return vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_option(buf, 'buflisted')
+    return vim.api.nvim_buf_is_loaded(buf) and vim.fn.buflisted(buf) == 1
   end, vim.api.nvim_list_bufs())
 
   if #listed > 1 and vim.api.nvim_buf_is_loaded(alternate_buf) then
@@ -55,7 +55,7 @@ vim.keymap.set('n', '<leader>x', function()
     vim.cmd('bdelete ' .. current_buf)
   end
 end, { desc = 'Smart buffer close', noremap = true, silent = true })
-vim.keymap.set('n', '<leader>b', '<cmd> enew <CR>', opts) -- new buffer
+vim.keymap.set('n', '<leader>bn', '<cmd>enew<CR>', opts) -- new buffer
 
 -- Window management
 vim.keymap.set('n', '<leader>v', '<C-w>v', opts) -- split window vertically
@@ -109,6 +109,24 @@ vim.keymap.set('n', '<leader>i', function()
   print('ignorecase: ' .. tostring(vim.o.ignorecase) .. ', smartcase: ' .. tostring(vim.o.smartcase))
 end, { desc = 'Toggle ignorecase + smartcase' })
 
+vim.keymap.set('n', '<leader>ra', function()
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(bufnr) and vim.fn.buflisted(bufnr) == 1 then
+      local modified = vim.bo[bufnr].modified
+      if not modified then
+        vim.api.nvim_buf_call(bufnr, function()
+          vim.cmd 'checktime'
+        end)
+      end
+    end
+  end
+
+  local ok, neotree = pcall(require, 'neo-tree.sources.manager')
+  if ok then
+    neotree.refresh 'filesystem'
+  end
+end, { desc = 'Reload All Buffers if Not Modified' })
+
 -- Swap buffer with the pane to the right
 vim.keymap.set('n', '<leader>ml', function()
   local cur_buf = vim.fn.bufnr '%'
@@ -143,5 +161,3 @@ vim.keymap.set('n', '<leader>mh', function()
   vim.api.nvim_set_current_buf(left_buf)
 end, { desc = 'Swap buffer with left pane' })
 
--- Telescope
-vim.keymap.set('n', '<leader>b', '<cmd>Telescope buffers<CR>', { desc = 'List buffers' })
