@@ -35,34 +35,16 @@ vim.api.nvim_create_user_command('FixIndent', function()
   vim.cmd 'normal gg=G'
 end, {})
 
-vim.keymap.set('n', '<leader>ra', function()
-  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_loaded(bufnr) and vim.fn.buflisted(bufnr) == 1 then
-      local modified = vim.api.nvim_buf_get_option(bufnr, 'modified')
-      if not modified then
-        vim.api.nvim_buf_call(bufnr, function()
-          vim.cmd 'checktime'
-        end)
-      end
-    end
-  end
-
-  local ok, neotree = pcall(require, 'neo-tree.sources.manager')
-  if ok then
-    neotree.refresh 'filesystem'
-  end
-end, { desc = 'Reload All Buffers if Not Modified' })
-
 -- Set up plugins
 require('lazy').setup {
   -- Core UI components
   require 'plugins.colortheme',
-  -- require 'plugins.cool-night',
   require 'plugins.alpha',
   require 'plugins.lualine',
   require 'plugins.neotree',
   require 'plugins.bufferline',
   require 'plugins.indent-blankline',
+  require 'plugins.nvim-ufo',
 
   -- Core functionality
   require 'plugins.treesitter',
@@ -87,6 +69,7 @@ require('lazy').setup {
 
   -- Testing tools
   require 'plugins.neotest',
+  require 'plugins.copilot-chat',
 
   -- Extras
   require 'plugins.snacks',
@@ -97,6 +80,18 @@ require('lazy').setup {
 }
 
 -- require('plugins.cool-night').setup()
-require('everforest').load()
--- The line beneath this is called `modeline`. See `:help modeline`
+-- require('everforest').load()
+-- Enable true color
+vim.opt.termguicolors = true
+
+-- Set colorscheme
+vim.g.edge_style = 'aura' -- or any style you want
+vim.cmd.colorscheme 'edge'
+
+-- Define custom highlight colors for normal and inactive windows
+vim.api.nvim_set_hl(0, 'NormalNC', { bg = '#232530' }) -- active
+vim.opt.cursorline = true
+vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#2e3240' }) -- lighter than #262a36
+vim.api.nvim_set_hl(0, 'DiagnosticError', { fg = '#ff5f5f', underline = true })
+vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true, sp = '#ff5f5f' })
 -- vim: ts=2 sts=2 sw=2 et

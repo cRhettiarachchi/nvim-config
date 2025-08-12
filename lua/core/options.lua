@@ -43,3 +43,12 @@ vim.opt.formatoptions:remove { 'c', 'r', 'o' } -- Don't insert the current comme
 vim.opt.runtimepath:remove '/usr/share/vim/vimfiles' -- Separate Vim plugins from Neovim in case Vim still in use (default: includes this path if Vim is installed)
 vim.o.incsearch = true -- Incremental search as you type
 vim.o.hlsearch = true -- Highlight search matches
+-- fold
+-- vim.opt.foldmethod = 'expr'
+-- vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+-- vim.opt.foldcolumn = '0'
+-- vim.opt.foldtext = ''
+-- vim.opt.foldlevel = 99
+-- -- vim.opt.foldlevelstart = 1
+-- vim.opt.foldnestmax = 4
+vim.opt.foldopen = ''
