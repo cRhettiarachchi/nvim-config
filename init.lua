@@ -57,7 +57,6 @@ end, { desc = 'Reload All Buffers if Not Modified' })
 require('lazy').setup {
   -- Core UI components
   require 'plugins.colortheme',
-  -- require 'plugins.cool-night',
   require 'plugins.alpha',
   require 'plugins.lualine',
   require 'plugins.neotree',
