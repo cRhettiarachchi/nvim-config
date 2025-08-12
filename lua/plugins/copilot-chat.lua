@@ -2,7 +2,17 @@ return {
   {
     'CopilotC-Nvim/CopilotChat.nvim',
     dependencies = {
-      { 'github/copilot.vim' }, -- or zbirenbaum/copilot.lua
+      {
+        'github/copilot.vim',
+        config = function()
+          vim.g.copilot_no_tab_map = true
+          vim.keymap.set('i', '<C-J>', 'copilot#Accept("<CR>")', {
+            expr = true,
+            silent = true,
+            noremap = true,
+          })
+        end,
+      }, -- or zbirenbaum/copilot.lua
       { 'nvim-lua/plenary.nvim', branch = 'master' }, -- for curl, log and async functions
     },
     build = 'make tiktoken',
@@ -18,6 +28,24 @@ return {
       },
     },
     keys = {
+      { '<leader>cc', ':CopilotChatToggle<CR>', mode = 'n', desc = 'Toggle Copilot Chat' },
+      {
+        '<leader>cc',
+        function()
+          local selection = vim.fn.getreg '"'
+          vim.ui.input({ prompt = 'What do you want to ask Copilot?' }, function(user_input)
+            local full_prompt = selection
+            if user_input and user_input ~= '' then
+              full_prompt = selection .. '\n\n' .. user_input
+            end
+            require('CopilotChat').ask(full_prompt)
+          end)
+        end,
+        mode = 'v',
+        desc = 'Ask CopilotChat with context',
+        noremap = true,
+        silent = true,
+      },
       { '<leader>zc', ':CopilotChat<CR>', mode = 'n', desc = 'Chat with Copilot' },
       { '<leader>zc', ':CopilotChat<CR>', mode = 'v', desc = 'Chat with Copilot' },
       { '<leader>ze', ':CopilotChatExplain<CR>', mode = 'v', desc = 'Explain Code' },

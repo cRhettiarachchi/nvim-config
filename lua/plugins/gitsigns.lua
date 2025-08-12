@@ -23,20 +23,20 @@ return {
 
     -- Git keymaps
     -- Next and previous hunk navigation
-    vim.keymap.set('n', ']g', ':Gitsigns next_hunk<CR>')
-    vim.keymap.set('n', '[g', ':Gitsigns prev_hunk<CR>')
+    vim.keymap.set('n', ']g', gs.next_hunk, { desc = 'Next Git hunk' })
+    vim.keymap.set('n', '[g', gs.prev_hunk, { desc = 'Previous Git hunk' })
 
     -- Preview hunk automatically when navigating
     vim.keymap.set('n', '<leader>gn', function()
-      require('gitsigns').next_hunk()
-      require('gitsigns').preview_hunk()
-    end, { noremap = true })
+      gs.next_hunk()
+      gs.preview_hunk()
+    end, { noremap = true, desc = 'Next hunk and preview' })
 
     vim.keymap.set('n', '<leader>gp', function()
-      require('gitsigns').preview_hunk()
-    end, { noremap = true })
+      gs.preview_hunk()
+    end, { noremap = true, desc = 'Preview hunk' })
 
-    vim.keymap.set('n', '<leader>gs', gs.stage_hunk, { desc = 'Stage Git hunk' })
+    vim.keymap.set('n', '<leader>gh', gs.stage_hunk, { desc = 'Stage Git hunk' })
     vim.keymap.set('n', '<leader>gu', gs.undo_stage_hunk, { desc = 'Undo stage Git hunk' })
     vim.keymap.set('n', '<leader>gb', gs.toggle_current_line_blame, { desc = 'Toggle current line blame' })
   end,

@@ -35,29 +35,10 @@ vim.api.nvim_create_user_command('FixIndent', function()
   vim.cmd 'normal gg=G'
 end, {})
 
-vim.keymap.set('n', '<leader>ra', function()
-  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_loaded(bufnr) and vim.fn.buflisted(bufnr) == 1 then
-      local modified = vim.api.nvim_buf_get_option(bufnr, 'modified')
-      if not modified then
-        vim.api.nvim_buf_call(bufnr, function()
-          vim.cmd 'checktime'
-        end)
-      end
-    end
-  end
-
-  local ok, neotree = pcall(require, 'neo-tree.sources.manager')
-  if ok then
-    neotree.refresh 'filesystem'
-  end
-end, { desc = 'Reload All Buffers if Not Modified' })
-
 -- Set up plugins
 require('lazy').setup {
   -- Core UI components
   require 'plugins.colortheme',
-  -- require 'plugins.cool-night',
   require 'plugins.alpha',
   require 'plugins.lualine',
   require 'plugins.neotree',
@@ -97,30 +78,6 @@ require('lazy').setup {
   require 'plugins.inc-rename',
   require 'plugins.nnn',
 }
-
-vim.keymap.set('n', '<leader>cc', ':CopilotChatToggle<CR>', { desc = 'Toggle Copilot Chat' })
-
-vim.keymap.set('v', '<leader>cc', function()
-  -- Get visual selection
-  local selection = vim.fn.getreg '"'
-
-  -- Prompt for additional context
-  vim.ui.input({ prompt = 'What do you want to ask Copilot?' }, function(user_input)
-    -- Combine both and send to Copilot
-    local full_prompt = selection
-    if user_input and user_input ~= '' then
-      full_prompt = selection .. '\n\n' .. user_input
-    end
-    require('CopilotChat').ask(full_prompt)
-  end)
-end, { desc = 'Ask CopilotChat with context', noremap = true, silent = true })
-
-vim.g.copilot_no_tab_map = true
-vim.api.nvim_set_keymap('i', '<C-J>', 'copilot#Accept("<CR>")', {
-  expr = true,
-  silent = true,
-  noremap = true,
-})
 
 -- require('plugins.cool-night').setup()
 -- require('everforest').load()
