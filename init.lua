@@ -63,6 +63,7 @@ require('lazy').setup {
   require 'plugins.neotree',
   require 'plugins.bufferline',
   require 'plugins.indent-blankline',
+  require 'plugins.nvim-ufo',
 
   -- Core functionality
   require 'plugins.treesitter',
@@ -87,6 +88,7 @@ require('lazy').setup {
 
   -- Testing tools
   require 'plugins.neotest',
+  require 'plugins.copilot-chat',
 
   -- Extras
   require 'plugins.snacks',
