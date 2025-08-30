@@ -98,7 +98,6 @@ require('lazy').setup {
   require 'plugins.nnn',
 }
 
--- require('plugins.cool-night').setup()
-require('everforest').load()
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
+-- Set colorscheme
+vim.g.edge_style = 'aura' -- or any style you want
+vim.cmd.colorscheme 'edge'
