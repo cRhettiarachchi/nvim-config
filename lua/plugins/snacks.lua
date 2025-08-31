@@ -4,6 +4,12 @@ return {
   lazy = false,
   opts = {
     bigfile = { enabled = true },
+    dashboard = {
+      enabled = true,
+    },
+    explorer = {
+      enabled = true,
+    },
     indent = { enabled = true },
     notifier = {
       enabled = true,
@@ -41,6 +47,14 @@ return {
       end,
       desc = 'Grep Word',
       mode = { 'n', 'x' },
+    },
+    {
+      '<leader>db',
+      function()
+        Snacks.dashboard.open()
+      end,
+      desc = 'Snacks Dashboard',
+      mode = { 'n' },
     },
     {
       '<leader>sr',
@@ -111,6 +125,13 @@ return {
         Snacks.picker.projects()
       end,
       desc = 'Projects',
+    },
+    {
+      '<leader>fe',
+      function()
+        Snacks.picker.explorer()
+      end,
+      desc = 'Snacks explorer',
     },
     -- Scratch buffer
     {

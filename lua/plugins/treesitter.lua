@@ -15,20 +15,20 @@ return { -- Highlight, edit, and navigate code
       'json',
       'lua', -- for config files
     }
-    
+
     -- Define extended parsers - these load on demand
     local extended_parsers = {
       'python',
       'vimdoc',
       'vim',
       'regex',
-      'terraform',
+      -- 'terraform',
       'sql',
       'dockerfile',
       'toml',
       'java',
       'groovy',
-      'go',
+      -- 'go',
       'gitignore',
       'graphql',
       'yaml',
@@ -38,7 +38,7 @@ return { -- Highlight, edit, and navigate code
       'markdown_inline',
       'bash',
     }
-    
+
     return {
       ensure_installed = vim.list_extend(core_parsers, extended_parsers),
       -- Autoinstall languages that are not installed
