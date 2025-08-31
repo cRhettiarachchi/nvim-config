@@ -101,3 +101,10 @@ require('lazy').setup {
 -- Set colorscheme
 vim.g.edge_style = 'aura' -- or any style you want
 vim.cmd.colorscheme 'edge'
+
+-- Define custom highlight colors for normal and inactive windows
+vim.api.nvim_set_hl(0, 'NormalNC', { bg = '#232530' }) -- active
+vim.opt.cursorline = true
+vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#2e3240' }) -- lighter than #262a36
+vim.api.nvim_set_hl(0, 'DiagnosticError', { fg = '#ff5f5f', underline = true })
+vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true, sp = '#ff5f5f' })

@@ -127,7 +127,7 @@ return {
       desc = 'Projects',
     },
     {
-      '<leader>fe',
+      '<leader>j1',
       function()
         Snacks.picker.explorer()
       end,
