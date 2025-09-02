@@ -92,7 +92,7 @@ require('lazy').setup {
 
   -- Extras
   require 'plugins.snacks',
-  require 'plugins.leet-code',
+  require 'plugins.nvim-leetcode',
   require 'plugins.todo-comments',
   require 'plugins.inc-rename',
   require 'plugins.nnn',
@@ -106,5 +106,3 @@ vim.cmd.colorscheme 'edge'
 vim.api.nvim_set_hl(0, 'NormalNC', { bg = '#232530' }) -- active
 vim.opt.cursorline = true
 vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#2e3240' }) -- lighter than #262a36
-vim.api.nvim_set_hl(0, 'DiagnosticError', { fg = '#ff5f5f', underline = true })
-vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true, sp = '#ff5f5f' })

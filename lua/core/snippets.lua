@@ -14,7 +14,7 @@ vim.diagnostic.config {
       return string.format('%s %s', code, diagnostic.message)
     end,
   },
-  underline = false,
+  underline = true,
   update_in_insert = true,
   float = {
     source = 'always', -- Or "if_many"
@@ -34,5 +34,3 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = highlight_group,
   pattern = '*',
 })
-
-vim.api.nvim_set_keymap('n', '<leader>t', ':TSPlaygroundToggle<CR>', { noremap = true, silent = true })

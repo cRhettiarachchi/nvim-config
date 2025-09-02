@@ -15,7 +15,47 @@ return {
       enabled = true,
       timeout = 3000,
     },
-    picker = { enabled = true },
+    picker = {
+      enabled = true,
+
+      -- 1) Define actions once
+      actions = {
+        copy_path_abs = function(_, item)
+          if not item then
+            return
+          end
+          local path = item.path or item.file or item.filename
+          if not path then
+            return
+          end
+          vim.fn.setreg('+', path)
+          vim.notify('Copied path: ' .. path)
+        end,
+
+        copy_path_rel = function(_, item)
+          if not item then
+            return
+          end
+          local path = item.path or item.file or item.filename
+          if not path then
+            return
+          end
+          local rel = vim.fn.fnamemodify(path, ':.')
+          vim.fn.setreg('+', rel)
+          vim.notify('Copied relative: ' .. rel)
+        end,
+      },
+
+      -- 2) Bind keys for the picker input (both normal & insert modes)
+      win = {
+        input = {
+          keys = {
+            ['<C-y>'] = { 'copy_path_abs', mode = { 'n', 'i' } },
+            ['<C-r>'] = { 'copy_path_rel', mode = { 'n', 'i' } },
+          },
+        },
+      },
+    },
     scroll = { enabled = true },
     statuscolumn = { enabled = true },
     words = { enabled = true },
