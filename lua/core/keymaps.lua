@@ -43,7 +43,7 @@ vim.keymap.set('n', '<leader>x', function()
 
   -- Count the number of listed buffers
   local listed = vim.tbl_filter(function(buf)
-    return vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_option(buf, 'buflisted')
+    return vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted
   end, vim.api.nvim_list_bufs())
 
   if #listed > 1 and vim.api.nvim_buf_is_loaded(alternate_buf) then

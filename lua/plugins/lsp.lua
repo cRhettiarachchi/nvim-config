@@ -188,7 +188,7 @@ return {
     -- Define core web development LSPs and other LSPs
     local core_web_lsps = {
       -- JavaScript/TypeScript - high priority
-      ts_ls = {
+      tsserver = {
         priority = 1000, -- High priority for TS/JS
       },
 
