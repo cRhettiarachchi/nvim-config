@@ -88,7 +88,8 @@ require('lazy').setup {
 
   -- Testing tools
   require 'plugins.neotest',
-  require 'plugins.copilot-chat',
+  -- require 'plugins.copilot-chat',
+
 
   -- Extras
   require 'plugins.snacks',
@@ -96,6 +97,8 @@ require('lazy').setup {
   require 'plugins.todo-comments',
   require 'plugins.inc-rename',
   require 'plugins.nnn',
+  require 'plugins.lua-snippets',
+  require 'plugins.opencode',
 }
 
 -- Set colorscheme

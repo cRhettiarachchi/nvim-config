@@ -142,3 +142,7 @@ vim.keymap.set('n', '<leader>mh', function()
   vim.api.nvim_set_current_win(cur_win)
   vim.api.nvim_set_current_buf(left_buf)
 end, { desc = 'Swap buffer with left pane' })
+
+vim.keymap.set('n', '<leader>dcl', function()
+  vim.cmd [[g/console\.log/d]]
+end, { desc = 'Delete all console.log lines' })

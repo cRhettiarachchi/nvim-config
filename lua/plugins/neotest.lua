@@ -20,6 +20,7 @@ return {
         },
       },
     }
+
     vim.keymap.set('n', '<leader>tt', function()
       require('neotest').run.run()
     end, { desc = '[T]est [T]his - Run nearest test' })

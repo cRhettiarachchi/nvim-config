@@ -136,13 +136,7 @@ return {
     },
 
     -- Zen Mode
-    {
-      '<leader>z',
-      function()
-        Snacks.zen()
-      end,
-      desc = 'Toggle Zen Mode',
-    },
+
     {
       '<leader>Z',
       function()
@@ -166,13 +160,13 @@ return {
       end,
       desc = 'Projects',
     },
-    {
-      '<leader>j1',
-      function()
-        Snacks.picker.explorer()
-      end,
-      desc = 'Snacks explorer',
-    },
+    -- {
+    --   '<leader>j1',
+    --   function()
+    --     Snacks.picker.explorer()
+    --   end,
+    --   desc = 'Snacks explorer',
+    -- },
     -- Scratch buffer
     {
       '<leader>.',
