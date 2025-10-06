@@ -38,7 +38,7 @@ end, {})
 vim.keymap.set('n', '<leader>ra', function()
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(bufnr) and vim.fn.buflisted(bufnr) == 1 then
-      local modified = vim.api.nvim_buf_get_option(bufnr, 'modified')
+      local modified = vim.bo[bufnr].modified
       if not modified then
         vim.api.nvim_buf_call(bufnr, function()
           vim.cmd 'checktime'

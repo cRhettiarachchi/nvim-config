@@ -68,8 +68,8 @@ return {
     -- Optional: LSP on_attach folding integration
     local on_attach = function(client, bufnr)
       if client.server_capabilities.foldingRangeProvider then
-        vim.api.nvim_buf_set_option(bufnr, 'foldmethod', 'expr')
-        vim.api.nvim_buf_set_option(bufnr, 'foldexpr', 'v:lua.vim.ufos.foldexpr()')
+        vim.bo[bufnr].foldmethod = 'expr'
+        vim.bo[bufnr].foldexpr = 'v:lua.vim.ufos.foldexpr()'
       end
     end
     -- Example for LSP setup
