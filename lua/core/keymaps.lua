@@ -146,3 +146,29 @@ end, { desc = 'Swap buffer with left pane' })
 vim.keymap.set('n', '<leader>dcl', function()
   vim.cmd [[g/console\.log/d]]
 end, { desc = 'Delete all console.log lines' })
+
+vim.keymap.set('n', '<leader>dm', function()
+  local input = vim.fn.input 'Delete marks (e.g. aBz, empty = delete all): '
+  if input ~= '' then
+    vim.cmd('delmarks ' .. input)
+    print('Deleted marks: ' .. input)
+  else
+    vim.cmd 'delmarks! | delmarks A-Z0-9'
+    print 'Deleted all marks'
+  end
+end, { desc = 'Delete marks (prompt)' })
+
+-- GREP RELATED
+-- use <Leader>gg to open quickfix list and Grep for a query
+vim.keymap.set('n', '<Leader>jg', ':copen | :silent :grep ')
+
+-- use ]q and [q to cycle through quickfix list
+vim.keymap.set('n', ']q', ':cnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '[q', ':cprev<CR>', { noremap = true, silent = true })
+
+-- Window management
+-- Maximize width
+vim.keymap.set('n', '<leader>mf', '<C-w>|', { desc = 'Maximize window width (full)' })
+
+-- Equalize all windows
+vim.keymap.set('n', '<leader>me', '<C-w>=', { desc = 'Equalize window sizes' })
