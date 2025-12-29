@@ -10,6 +10,7 @@ return { -- Highlight, edit, and navigate code
       'javascript',
       'typescript',
       'tsx',
+      'vue',
       'html',
       'css',
       'json',
