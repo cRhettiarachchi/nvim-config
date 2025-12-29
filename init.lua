@@ -78,6 +78,7 @@ require('lazy').setup {
 
   -- Git integration
   require 'plugins.gitsigns',
+  require 'plugins.diffview',
 
   -- Editor enhancements
   require 'plugins.misc',
@@ -90,7 +91,6 @@ require('lazy').setup {
   require 'plugins.neotest',
   -- require 'plugins.copilot-chat',
 
-
   -- Extras
   require 'plugins.snacks',
   require 'plugins.nvim-leetcode',
@@ -99,6 +99,7 @@ require('lazy').setup {
   require 'plugins.nnn',
   require 'plugins.lua-snippets',
   require 'plugins.opencode',
+  require 'plugins.claude-code',
 }
 
 -- Set colorscheme

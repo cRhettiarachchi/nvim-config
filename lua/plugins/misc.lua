@@ -20,9 +20,9 @@ return {
     -- Hints keybinds
     'folke/which-key.nvim',
   },
-  {
-    'github/copilot.vim',
-  },
+  -- {
+  --   'github/copilot.vim',
+  -- },
   {
     'windwp/nvim-autopairs',
     event = 'InsertEnter',

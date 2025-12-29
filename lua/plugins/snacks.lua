@@ -138,7 +138,7 @@ return {
     -- Zen Mode
 
     {
-      '<leader>Z',
+      '<leader>mm',
       function()
         Snacks.zen.zoom()
       end,
