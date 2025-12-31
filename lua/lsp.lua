@@ -77,4 +77,12 @@ vim.diagnostic.config {
       [severity.INFO] = " ",
     },
   },
+  underline = true,
 }
+
+-- Make diagnostic underlines more visible
+-- Using both undercurl and underline for better terminal compatibility
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { undercurl = true, underline = true, sp = "#E82424" })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { undercurl = true, underline = true, sp = "#FF9E3B" })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { undercurl = true, underline = true, sp = "#658594" })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", { undercurl = true, underline = true, sp = "#7FB4CA" }) -- Bright blue for typos
