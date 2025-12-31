@@ -1,4 +1,5 @@
 local keymap = vim.keymap -- for conciseness
+
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("UserLspConfig", {}),
   callback = function(ev)
@@ -35,14 +36,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
     keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
 
     opts.desc = "Go to previous diagnostic"
-    keymap.set("n", "[d", function()
-      vim.diagnostic.jump({ count = -1, float = true })
-    end, opts) -- jump to previous diagnostic in buffer
+    keymap.set("n", "[d", function() vim.diagnostic.jump { count = -1, float = true } end, opts) -- jump to previous diagnostic in buffer
     --
     opts.desc = "Go to next diagnostic"
-    keymap.set("n", "]d", function()
-      vim.diagnostic.jump({ count = 1, float = true })
-    end, opts) -- jump to next diagnostic in buffer
+    keymap.set("n", "]d", function() vim.diagnostic.jump { count = 1, float = true } end, opts) -- jump to next diagnostic in buffer
 
     opts.desc = "Show documentation for what is under cursor"
     keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
@@ -56,7 +53,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 local severity = vim.diagnostic.severity
 
-vim.diagnostic.config({
+-- Configure typos-lsp (Neovim 0.11+ API)
+vim.lsp.config("typos_lsp", {
+  cmd = { "typos-lsp" },
+  cmd_env = { RUST_LOG = "error" },
+  filetypes = { "markdown", "text", "lua", "javascript", "typescript", "vue", "html", "css", "python", "rust", "go" },
+  root_markers = { ".git", "package.json", "Cargo.toml" },
+  settings = {
+    diagnosticSeverity = "Hint",
+  },
+})
+
+-- Enable typos-lsp for configured filetypes
+vim.lsp.enable "typos_lsp"
+
+vim.diagnostic.config {
+  virtual_text = true, -- Enable inline diagnostic text
   signs = {
     text = {
       [severity.ERROR] = " ",
@@ -65,4 +77,4 @@ vim.diagnostic.config({
       [severity.INFO] = " ",
     },
   },
-})
+}
