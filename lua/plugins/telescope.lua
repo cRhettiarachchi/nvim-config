@@ -15,7 +15,35 @@ return {
   config = function()
     local telescope = require "telescope"
     telescope.setup {
-      -- config here
+      defaults = {
+        file_ignore_patterns = {
+          "node_modules",
+          ".git/",
+          "%.lock",
+          "package%-lock%.json",
+          "yarn%.lock",
+          "pnpm%-lock%.yaml",
+          "bun%.lockb",
+          "vendor/",
+          "%.min%.js",
+          "%.min%.css",
+          "dist/",
+          "build/",
+          "target/",
+          "%.class",
+          "%.pyc",
+          "__pycache__/",
+          "%.o",
+          "%.a",
+          "%.so",
+          "%.dylib",
+        },
+      },
+      pickers = {
+        find_files = {
+          hidden = true,
+        },
+      },
     }
 
     local builtin = require "telescope.builtin"
