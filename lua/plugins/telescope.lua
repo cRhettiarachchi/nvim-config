@@ -30,6 +30,8 @@ return {
     vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "Live Grep" })
     vim.keymap.set("n", "<leader>sb", builtin.buffers, { desc = "Buffers" })
     vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "Helpers" })
+    vim.keymap.set("n", "<leader>sk", require("telescope.builtin").keymaps, { desc = "[S]earch [K]eymaps" })
+
     vim.keymap.set(
       "n",
       "<leader>sgl",
