@@ -10,6 +10,13 @@ return {
     "nvim-telescope/telescope-file-browser.nvim",
     "debugloop/telescope-undo.nvim",
     "nvim-telescope/telescope-live-grep-args.nvim",
+    {
+      "isak102/telescope-git-file-history.nvim",
+      dependencies = {
+        "nvim-lua/plenary.nvim",
+        "tpope/vim-fugitive",
+      },
+    },
   },
 
   config = function()
@@ -76,5 +83,7 @@ return {
       { desc = "File Browser" }
     )
     vim.keymap.set("n", "<leader>sY", "<cmd>Telescope file_browser<cr>", { desc = "File Browser (cwd)" })
+
+    telescope.load_extension "git_file_history"
   end,
 }
