@@ -20,6 +20,14 @@ return {
     statuscolumn = { enabled = true },
     words = { enabled = true },
   },
+  explorer = {
+    mappings = {
+      ["<CR>"] = "edit",
+      ["v"] = "vsplit",
+      ["s"] = "split",
+      ["t"] = "tabedit",
+    },
+  },
   keys = {
     { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
     { "<leader>b", function() Snacks.picker.buffers() end, desc = "Buffers" },

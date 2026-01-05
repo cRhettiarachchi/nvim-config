@@ -5,3 +5,5 @@ vim.keymap.set("n", "<leader>v", "<cmd>vsplit<CR>", { desc = "Vertical split" })
 
 -- Map horizontal split to <leader>h
 vim.keymap.set("n", "<leader>h", "<cmd>split<CR>", { desc = "Horizontal split" })
+
+vim.keymap.set("n", "<leader>me", "<C-w>=", { desc = "Horizontal split" })
