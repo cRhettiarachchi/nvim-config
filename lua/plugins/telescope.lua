@@ -50,6 +50,19 @@ return {
         find_files = {
           hidden = true,
         },
+        -- LSP pickers should NOT ignore node_modules (for library definitions)
+        lsp_definitions = {
+          file_ignore_patterns = {},
+        },
+        lsp_references = {
+          file_ignore_patterns = {},
+        },
+        lsp_implementations = {
+          file_ignore_patterns = {},
+        },
+        lsp_type_definitions = {
+          file_ignore_patterns = {},
+        },
       },
     }
 
