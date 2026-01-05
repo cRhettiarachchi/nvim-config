@@ -1,223 +1,89 @@
 return {
-  'nvim-telescope/telescope.nvim',
-  event = 'VimEnter',
-  branch = '0.1.x',
+  "nvim-telescope/telescope.nvim",
+  tag = "v0.2.0",
+
   dependencies = {
-    'nvim-lua/plenary.nvim',
-    { -- If encountering errors, see telescope-fzf-native README for installation instructions
-      'nvim-telescope/telescope-fzf-native.nvim',
-
-      -- `build` is used to run some command when the plugin is installed/updated.
-      -- This is only run then, not every time Neovim starts up.
-      build = 'make',
-
-      -- `cond` is a condition used to determine whether this plugin should be
-      -- installed and loaded.
-      cond = function()
-        return vim.fn.executable 'make' == 1
-      end,
+    "nvim-lua/plenary.nvim",
+    "BurntSushi/ripgrep",
+    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    "nvim-telescope/telescope-ui-select.nvim",
+    "nvim-telescope/telescope-file-browser.nvim",
+    "debugloop/telescope-undo.nvim",
+    "nvim-telescope/telescope-live-grep-args.nvim",
+    {
+      "isak102/telescope-git-file-history.nvim",
+      dependencies = {
+        "nvim-lua/plenary.nvim",
+        "tpope/vim-fugitive",
+      },
     },
-    { 'nvim-telescope/telescope-ui-select.nvim' },
-
-    -- Useful for getting pretty icons, but requires a Nerd Font.
-    { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
   },
-  config = function()
-    -- Telescope is a fuzzy finder that comes with a lot of different things that
-    -- it can fuzzy find! It's more than just a "file finder", it can search
-    -- many different aspects of Neovim, your workspace, LSP, and more!
-    --
-    -- The easiest way to use Telescope, is to start by doing something like:
-    --  :Telescope help_tags
-    --
-    -- After running this command, a window will open up and you're able to
-    -- type in the prompt window. You'll see a list of `help_tags` options and
-    -- a corresponding preview of the help.
-    --
-    -- Two important keymaps to use while in Telescope are:
-    --  - Insert mode: <c-/>
-    --  - Normal mode: ?
-    --
-    -- This opens a window that shows you all of the keymaps for the current
-    -- Telescope picker. This is really useful to discover what Telescope can
-    -- do as well as how to actually do it!
 
-    -- [[ Configure Telescope ]]
-    -- See `:help telescope` and `:help telescope.setup()`
-    require('telescope').setup {
-      -- You can put your default mappings / updates / etc. in here
-      --  All the info you're looking for is in `:help telescope.setup()`
+  config = function()
+    local telescope = require "telescope"
+    telescope.setup {
       defaults = {
-        mappings = {
-          i = {
-            ['<C-k>'] = require('telescope.actions').move_selection_previous, -- move to prev result
-            ['<C-j>'] = require('telescope.actions').move_selection_next, -- move to next result
-            ['<C-l>'] = require('telescope.actions').select_default, -- open file
-          },
+        file_ignore_patterns = {
+          "node_modules",
+          ".git/",
+          "%.lock",
+          "package%-lock%.json",
+          "yarn%.lock",
+          "pnpm%-lock%.yaml",
+          "bun%.lockb",
+          "vendor/",
+          "%.min%.js",
+          "%.min%.css",
+          "dist/",
+          "build/",
+          "target/",
+          "%.class",
+          "%.pyc",
+          "__pycache__/",
+          "%.o",
+          "%.a",
+          "%.so",
+          "%.dylib",
         },
       },
       pickers = {
         find_files = {
-          file_ignore_patterns = { 'node_modules', '.git', '.venv', '.next', '.idea', '.swc', '.vscode', 'coverage' },
           hidden = true,
-        },
-      },
-      live_grep = {
-        file_ignore_patterns = { 'node_modules', '.git', '.venv', '.next', '.idea', '.swc', '.vscode', 'coverage' },
-        additional_args = function(_)
-          return { '--hidden' }
-        end,
-      },
-      extensions = {
-        ['ui-select'] = {
-          require('telescope.themes').get_dropdown(),
         },
       },
     }
 
-    vim.api.nvim_create_user_command('GrepChanged', function()
-      local Job = require 'plenary.job'
-      Job:new({
-        command = 'git',
-        args = { 'diff', '--name-only' },
-        on_exit = function(j)
-          local result = j:result()
-          if vim.tbl_isempty(result) then
-            vim.schedule(function()
-              print 'No changed files!'
-            end)
-            return
-          end
+    local builtin = require "telescope.builtin"
 
-          -- 🔧 wrap live_grep inside vim.schedule to avoid the error
-          vim.schedule(function()
-            require('telescope.builtin').live_grep {
-              search_dirs = result,
-              prompt_title = 'Live Grep in Changed Files',
-            }
-          end)
-        end,
-      }):start()
-    end, {})
+    telescope.load_extension "fzf"
+    telescope.load_extension "ui-select"
+    telescope.load_extension "file_browser"
+    telescope.load_extension "undo"
+    telescope.load_extension "live_grep_args"
 
-    -- Enable Telescope extensions if they are installed
-    pcall(require('telescope').load_extension, 'fzf')
-    pcall(require('telescope').load_extension, 'ui-select')
+    vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Find Files" })
+    vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "Live Grep" })
+    vim.keymap.set("n", "<leader>sb", builtin.buffers, { desc = "Buffers" })
+    vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "Helpers" })
+    vim.keymap.set("n", "<leader>sk", require("telescope.builtin").keymaps, { desc = "[S]earch [K]eymaps" })
 
-    function GrepByExtension()
-      vim.ui.input({ prompt = 'Enter file extension (e.g. tsx, js, py): ' }, function(ext)
-        if ext == nil or ext == '' then
-          print '検索中止！No extension provided.'
-          return
-        end
+    vim.keymap.set(
+      "n",
+      "<leader>sgl",
+      function() require("telescope").extensions.live_grep_args.live_grep_args() end,
+      { desc = "live grep args" }
+    )
 
-        require('telescope.builtin').live_grep {
-          prompt_title = 'Grep in *.' .. ext .. ' files',
-          additional_args = function()
-            return { '--glob', '*.' .. ext }
-          end,
-        }
-      end)
-    end
-    
-    function GrepLiteral()
-      vim.ui.input({ prompt = 'Paste search text (literal): ' }, function(term)
-        if not term or term == '' then
-          print '検索中止！Nothing pasted.'
-          return
-        end
+    vim.keymap.set("n", "<leader>su", telescope.extensions.undo.undo, { desc = "undo" })
 
-        require('telescope.builtin').live_grep {
-          prompt_title = 'Literal Grep (No Regex)',
-          default_text = term,
-          additional_args = function()
-            return { '-F' } -- this disables regex, treats everything literally
-          end,
-        }
-      end)
-    end
+    vim.keymap.set(
+      "n",
+      "<leader>sy",
+      "<cmd>Telescope file_browser path=%:p:h select_buffer=true<cr>",
+      { desc = "File Browser" }
+    )
+    vim.keymap.set("n", "<leader>sY", "<cmd>Telescope file_browser<cr>", { desc = "File Browser (cwd)" })
 
-    -- This searches the word with include and exlude files
-    function GrepWithFilters()
-      local input = vim.ui.input
-      local telescope = require 'telescope.builtin'
-
-      input({ prompt = 'Search term: ' }, function(term)
-        if not term or term == '' then
-          print '検索中止！No search term.'
-          return
-        end
-
-        input({ prompt = 'Include globs (comma-separated): ' }, function(include_input)
-          input({ prompt = 'Exclude globs (comma-separated): ' }, function(exclude_input)
-            local args = {}
-
-            -- Include patterns
-            if include_input and include_input ~= '' then
-              for pattern in string.gmatch(include_input, '([^,]+)') do
-                table.insert(args, '--glob=' .. pattern)
-              end
-            end
-
-            -- Exclude patterns
-            if exclude_input and exclude_input ~= '' then
-              for pattern in string.gmatch(exclude_input, '([^,]+)') do
-                table.insert(args, '--glob=!' .. pattern)
-              end
-            end
-
-            telescope.live_grep {
-              prompt_title = 'Custom Grep',
-              default_text = term,
-              additional_args = function()
-                return args
-              end,
-            }
-          end)
-        end)
-      end)
-    end
-
-    -- See `:help telescope.builtin`
-    local builtin = require 'telescope.builtin'
-    vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-    -- vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-    -- vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-    vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-    vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-    -- vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-    -- vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-    -- vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-    vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-    vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-    vim.keymap.set('n', '<leader>gs', require('telescope.builtin').git_status, { desc = 'Telescope: Git Status (changed files)' })
-    vim.keymap.set('n', '<leader>gx', GrepWithFilters, { desc = 'Grep with include/exclude globs' })
-    vim.keymap.set('n', '<leader>gl', GrepLiteral, { desc = 'Literal (no escape) grep' })
-
-    vim.keymap.set('n', '<leader>se', function()
-      require('telescope.builtin').live_grep {
-        additional_args = function()
-          return { '--case-sensitive', '--word-regexp' }
-        end,
-      }
-    end, { desc = '[S]earch [E]xact word (case-sensitive)' })
-
-    -- Slightly advanced example of overriding default behavior and theme
-    vim.keymap.set('n', '<leader>/', function()
-      -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-      builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-        winblend = 10,
-        previewer = false,
-      })
-    end, { desc = '[/] Fuzzily search in current buffer' })
-
-    -- It's also possible to pass additional configuration options.
-    --  See `:help telescope.builtin.live_grep()` for information about particular keys
-    vim.keymap.set('n', '<leader>s/', function()
-      builtin.live_grep {
-        grep_open_files = true,
-        prompt_title = 'Live Grep in Open Files',
-      }
-    end, { desc = '[S]earch [/] in Open Files' })
+    telescope.load_extension "git_file_history"
   end,
 }

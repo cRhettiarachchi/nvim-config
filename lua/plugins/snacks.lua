@@ -1,211 +1,82 @@
 return {
-  'folke/snacks.nvim',
+  "folke/snacks.nvim",
   priority = 1000,
   lazy = false,
+  ---@type snacks.Config
   opts = {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
     bigfile = { enabled = true },
-    dashboard = {
-      enabled = true,
-    },
-    explorer = {
-      enabled = true,
-    },
+    dashboard = { enabled = true },
+    explorer = { enabled = true },
     indent = { enabled = true },
-    notifier = {
-      enabled = true,
-      timeout = 3000,
-    },
-    picker = {
-      enabled = true,
-
-      -- 1) Define actions once
-      actions = {
-        copy_path_abs = function(_, item)
-          if not item then
-            return
-          end
-          local path = item.path or item.file or item.filename
-          if not path then
-            return
-          end
-          vim.fn.setreg('+', path)
-          vim.notify('Copied path: ' .. path)
-        end,
-
-        copy_path_rel = function(_, item)
-          if not item then
-            return
-          end
-          local path = item.path or item.file or item.filename
-          if not path then
-            return
-          end
-          local rel = vim.fn.fnamemodify(path, ':.')
-          vim.fn.setreg('+', rel)
-          vim.notify('Copied relative: ' .. rel)
-        end,
-      },
-
-      -- 2) Bind keys for the picker input (both normal & insert modes)
-      win = {
-        input = {
-          keys = {
-            ['<C-y>'] = { 'copy_path_abs', mode = { 'n', 'i' } },
-            ['<C-r>'] = { 'copy_path_rel', mode = { 'n', 'i' } },
-          },
-        },
-      },
-    },
+    input = { enabled = true },
+    picker = { enabled = true },
+    notifier = { enabled = true },
+    quickfile = { enabled = true },
+    scope = { enabled = true },
     scroll = { enabled = true },
     statuscolumn = { enabled = true },
     words = { enabled = true },
   },
-  keys = {
-    -- File Search
-    {
-      '<leader>sf',
-      function()
-        Snacks.picker.files()
-      end,
-      desc = 'Find Files',
-    },
-
-    -- Grep/Search
-    {
-      '<leader>sg',
-      function()
-        Snacks.picker.grep {
-          command = { 'rg', '--vimgrep', '--smart-case', '--word-regexp' },
-        }
-      end,
-      desc = 'Grep',
-    },
-    {
-      '<leader>sw',
-      function()
-        Snacks.picker.grep_word()
-      end,
-      desc = 'Grep Word',
-      mode = { 'n', 'x' },
-    },
-    {
-      '<leader>db',
-      function()
-        Snacks.dashboard.open()
-      end,
-      desc = 'Snacks Dashboard',
-      mode = { 'n' },
-    },
-    {
-      '<leader>sr',
-      function()
-        Snacks.picker.resume()
-      end,
-      desc = 'Grep Word',
-      mode = { 'n', 'x' },
-    },
-    {
-      '<leader>sb',
-      function()
-        Snacks.picker.lines()
-      end,
-      desc = 'Buffer Lines',
-    },
-
-    -- Diagnostics
-    {
-      '<leader>sd',
-      function()
-        Snacks.picker.diagnostics()
-      end,
-      desc = 'Diagnostics',
-    },
-    {
-      '<leader>sD',
-      function()
-        Snacks.picker.diagnostics_buffer()
-      end,
-      desc = 'Buffer Diagnostics',
-    },
-    {
-      '<c-_>',
-      function()
-        Snacks.terminal()
-      end,
-      desc = 'which_key_ignore',
-    },
-
-    -- Zen Mode
-
-    {
-      '<leader>Z',
-      function()
-        Snacks.zen.zoom()
-      end,
-      desc = 'Toggle Zoom',
-    },
-
-    -- Lazygit
-    {
-      '<leader>gg',
-      function()
-        Snacks.lazygit()
-      end,
-      desc = 'Lazygit',
-    },
-    {
-      '<leader>fp',
-      function()
-        Snacks.picker.projects()
-      end,
-      desc = 'Projects',
-    },
-    -- {
-    --   '<leader>j1',
-    --   function()
-    --     Snacks.picker.explorer()
-    --   end,
-    --   desc = 'Snacks explorer',
-    -- },
-    -- Scratch buffer
-    {
-      '<leader>.',
-      function()
-        Snacks.scratch()
-      end,
-      desc = 'Toggle Scratch Buffer',
-    },
-    -- Command history
-    {
-      '<leader>:',
-      function()
-        Snacks.picker.command_history()
-      end,
-      desc = 'Command History',
-    },
-    -- Search commands
-    {
-      '<leader>sk',
-      function()
-        Snacks.picker.keymaps()
-      end,
-      desc = 'Keymaps',
-    },
-
-    -- Search existing buffers
-    {
-      '<leader>S',
-      function()
-        Snacks.scratch.select()
-      end,
-      desc = 'Select Scratch Buffer',
-    },
-    {
-      '<leader>n',
-      function()
-        Snacks.picker.notifications()
-      end,
-      desc = 'Notification History',
+  explorer = {
+    mappings = {
+      ["<CR>"] = "edit",
+      ["v"] = "vsplit",
+      ["s"] = "split",
+      ["t"] = "tabedit",
     },
   },
+  keys = {
+    { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
+    { "<leader>b", function() Snacks.picker.buffers() end, desc = "Buffers" },
+    { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
+    { "<leader>e", function() Snacks.explorer() end, desc = "File Explorer" },
+    { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
+
+    -- GIT
+    { "<leader>gb", function() Snacks.picker.git_branches() end, desc = "Git Branches" },
+    { "<leader>gl", function() Snacks.picker.git_log() end, desc = "Git Log" },
+    { "<leader>gL", function() Snacks.picker.git_log_line() end, desc = "Git Log Line" },
+    { "<leader>gs", function() Snacks.picker.git_status() end, desc = "Git Status" },
+
+    { "<leader>s/", function() Snacks.picker.search_history() end, desc = "Search History" },
+
+    { "gd", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition" },
+    { "gD", function() Snacks.picker.lsp_declarations() end, desc = "Goto Declaration" },
+    { "<leader>mm", function() Snacks.zen.zoom() end, desc = "Toggle Zoom" },
+  },
+  init = function()
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "VeryLazy",
+      callback = function()
+        -- Setup some globals for debugging (lazy-loaded)
+        _G.dd = function(...) Snacks.debug.inspect(...) end
+        _G.bt = function() Snacks.debug.backtrace() end
+
+        -- Override print to use snacks for `:=` command
+        if vim.fn.has "nvim-0.11" == 1 then
+          vim._print = function(_, ...) dd(...) end
+        else
+          vim.print = _G.dd
+        end
+
+        -- Create some toggle mappings
+        Snacks.toggle.option("spell", { name = "Spelling" }):map "<leader>us"
+        Snacks.toggle.option("wrap", { name = "Wrap" }):map "<leader>uw"
+        Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map "<leader>uL"
+        Snacks.toggle.diagnostics():map "<leader>ud"
+        Snacks.toggle.line_number():map "<leader>ul"
+        Snacks.toggle
+          .option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
+          :map "<leader>uc"
+        Snacks.toggle.treesitter():map "<leader>uT"
+        Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map "<leader>ub"
+        Snacks.toggle.inlay_hints():map "<leader>uh"
+        Snacks.toggle.indent():map "<leader>ug"
+        Snacks.toggle.dim():map "<leader>uD"
+      end,
+    })
+  end,
 }
