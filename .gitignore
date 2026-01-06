@@ -1,1 +1,14 @@
+# macOS
 .DS_Store
+
+# Neovim
+lazy-lock.json
+
+# Log files
+*.log
+
+# LSP
+.luarc.json
+
+# Testing
+.neoconf.json
