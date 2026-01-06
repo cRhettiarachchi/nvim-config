@@ -7,7 +7,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local opts = { buffer = ev.buf, silent = true }
 
-    -- set keybinds
+    -- set key-binds
     opts.desc = "LSP References"
     keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts)
 
@@ -53,19 +53,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 local severity = vim.diagnostic.severity
 
--- Configure typos-lsp (Neovim 0.11+ API)
-vim.lsp.config("typos_lsp", {
-  cmd = { "typos-lsp" },
-  cmd_env = { RUST_LOG = "error" },
-  filetypes = { "markdown", "text", "lua", "javascript", "typescript", "vue", "html", "css", "python", "rust", "go" },
-  root_markers = { ".git", "package.json", "Cargo.toml" },
-  settings = {
-    diagnosticSeverity = "Hint",
-  },
-})
-
--- Enable typos-lsp for configured filetypes
-vim.lsp.enable "typos_lsp"
+vim.lsp.enable "codebook"
 
 vim.diagnostic.config {
   virtual_text = true, -- Enable inline diagnostic text
@@ -81,7 +69,7 @@ vim.diagnostic.config {
 }
 
 -- Make diagnostic underlines more visible
--- Using both undercurl and underline for better terminal compatibility
+-- Using both under-curl and underline for better terminal compatibility
 vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { undercurl = true, underline = true, sp = "#E82424" })
 vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { undercurl = true, underline = true, sp = "#FF9E3B" })
 vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { undercurl = true, underline = true, sp = "#658594" })

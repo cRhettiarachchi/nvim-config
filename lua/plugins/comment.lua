@@ -5,7 +5,7 @@ return {
     require("Comment").setup {
       -- LHS of toggle mappings in NORMAL mode
       toggler = {
-        line = "gcc", -- Line-comment toggle
+        line = "<C-c>", -- Line-comment toggle
         block = "gbc", -- Block-comment toggle
       },
       -- LHS of operator-pending mappings in NORMAL and VISUAL mode
