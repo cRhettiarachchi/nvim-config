@@ -55,6 +55,35 @@ local severity = vim.diagnostic.severity
 
 vim.lsp.enable "codebook"
 
+vim.lsp.config("codebook", {
+  -- Server-specific settings. See `:help lsp-quickstart`
+  filetypes = {
+    "c",
+    "css",
+    "gitcommit",
+    "go",
+    "haskell",
+    "html",
+    "java",
+    "javascript",
+    "javascriptreact",
+    "lua",
+    "markdown",
+    "php",
+    "python",
+    "ruby",
+    "rust",
+    "swift",
+    "toml",
+    "text",
+    "typescript",
+    "typescriptreact",
+    "zig",
+    "vue",
+    "svelte",
+  },
+})
+
 vim.diagnostic.config {
   virtual_text = true, -- Enable inline diagnostic text
   signs = {
