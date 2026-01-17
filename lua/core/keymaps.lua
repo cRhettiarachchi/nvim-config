@@ -17,5 +17,7 @@ vim.keymap.set("n", "x", '"_x', opts)
 vim.keymap.set("n", "<C-d>", "<C-d>zz", opts)
 vim.keymap.set("n", "<C-u>", "<C-u>zz", opts)
 
+vim.keymap.set("n", "<leader>tr", "<cmd>LspRestart vtsls<CR>", { desc = "Restart vtsls" })
+
 -- Keep last yanked when pasting
 vim.keymap.set("v", "p", '"_dP', opts)
