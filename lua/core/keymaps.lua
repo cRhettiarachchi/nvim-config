@@ -21,3 +21,5 @@ vim.keymap.set("n", "<leader>tr", "<cmd>LspRestart vtsls<CR>", { desc = "Restart
 
 -- Keep last yanked when pasting
 vim.keymap.set("v", "p", '"_dP', opts)
+
+vim.keymap.set("n", "<leader>oc", ":!google-chrome %:p &<CR><CR>")
