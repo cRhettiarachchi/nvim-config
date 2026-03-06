@@ -75,7 +75,8 @@ return {
     telescope.load_extension "live_grep_args"
 
     vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Find Files" })
-    vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "Live Grep" })
+    vim.keymap.set("n", "<leader>sgg", builtin.live_grep, { desc = "Live Grep" })
+    vim.keymap.set("n", "<leader>sgs", builtin.grep_string, { desc = "Grep String" })
     vim.keymap.set("n", "<leader>sb", builtin.buffers, { desc = "Buffers" })
     vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "Helpers" })
     vim.keymap.set("n", "<leader>sk", require("telescope.builtin").keymaps, { desc = "[S]earch [K]eymaps" })
