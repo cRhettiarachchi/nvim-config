@@ -67,3 +67,10 @@ keymap("n", "<leader>cp", function()
   vim.fn.setreg("+", path)
   vim.notify("Copied: " .. path)
 end, { desc = "Copy relative path" })
+
+-- BUFFERLINE
+---- In your keymaps file or init.lua
+vim.keymap.set("n", "<Tab>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
+vim.keymap.set("n", "<leader>x", "<cmd>bdelete<CR>", { desc = "Close buffer" })
+vim.keymap.set("n", "<leader>X", "<cmd>BufferLineCloseOthers<CR>", { desc = "Close other buffers" })
+vim.keymap.set("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Prev buffer" })

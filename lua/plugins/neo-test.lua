@@ -6,6 +6,7 @@ return {
     "antoinemadec/FixCursorHold.nvim",
     "nvim-treesitter/nvim-treesitter",
     "nvim-neotest/neotest-jest",
+    "marilari88/neotest-vitest",
   },
   config = function()
     require("neotest").setup {
@@ -15,6 +16,9 @@ return {
           jestConfigFile = "jest.config.js", -- Adjust if needed
           env = { CI = true },
           cwd = function(path) return vim.fn.getcwd() end,
+        },
+        require "neotest-vitest" {
+          filter_dir = function(name, rel_path, root) return name ~= "node_modules" end,
         },
       },
     }
