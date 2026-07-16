@@ -1,5 +1,9 @@
 local keymap = vim.keymap -- for conciseness
 
+-- Global fallback so <leader>ca is always registered regardless of LSP attach state.
+-- Buffer-local keymaps set in LspAttach below take precedence when LSP is active.
+keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { silent = true, desc = "See available code actions" })
+
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("UserLspConfig", {}),
   callback = function(ev)

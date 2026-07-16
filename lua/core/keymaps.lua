@@ -31,24 +31,26 @@ keymap(
   { desc = "Delete bookmark in file" }
 )
 
-local refactoring = require "refactoring"
-local refactor_keys = {
-  { "re", "Extract Function" },
-  { "rf", "Extract Function To File" },
-  { "rv", "Extract Variable" },
-  { "rI", "Inline Function" },
-  { "ri", "Inline Variable" },
-  { "rbb", "Extract Block" },
-  { "rbf", "Extract Block To File" },
-}
-for _, pair in ipairs(refactor_keys) do
-  local lhs, name = pair[1], pair[2]
-  keymap(
-    { "n", "x" },
-    "<leader>" .. lhs,
-    function() return refactoring.refactor(name) end,
-    { expr = true, desc = "Refactor: " .. name }
-  )
+local ok, refactoring = pcall(require, "refactoring")
+if ok then
+  local refactor_keys = {
+    { "re", "Extract Function" },
+    { "rf", "Extract Function To File" },
+    { "rv", "Extract Variable" },
+    { "rI", "Inline Function" },
+    { "ri", "Inline Variable" },
+    { "rbb", "Extract Block" },
+    { "rbf", "Extract Block To File" },
+  }
+  for _, pair in ipairs(refactor_keys) do
+    local lhs, name = pair[1], pair[2]
+    keymap(
+      { "n", "x" },
+      "<leader>" .. lhs,
+      function() return refactoring.refactor(name) end,
+      { expr = true, desc = "Refactor: " .. name }
+    )
+  end
 end
 
 keymap("v", "<leader>ol", function()
@@ -67,6 +69,25 @@ keymap("n", "<leader>cp", function()
   vim.fn.setreg("+", path)
   vim.notify("Copied: " .. path)
 end, { desc = "Copy relative path" })
+
+keymap("n", "<leader>al", function()
+  local ref = "@" .. vim.fn.expand "%:." .. "#L" .. vim.fn.line "."
+  vim.fn.setreg("+", ref)
+  vim.notify("Copied: " .. ref)
+end, { desc = "Copy @file#L ref for agent" })
+
+keymap("v", "<leader>al", function()
+  local s = vim.fn.line "v"
+  local e = vim.fn.line "."
+  if s > e then s, e = e, s end
+  local ref = "@" .. vim.fn.expand "%:." .. "#L" .. s .. "-" .. e
+  vim.fn.setreg("+", ref)
+  vim.notify("Copied: " .. ref)
+end, { desc = "Copy @file#L range ref for agent" })
+
+-- TABS
+keymap("n", "]t", "<cmd>tabnext<CR>", { desc = "Next tab" })
+keymap("n", "[t", "<cmd>tabprev<CR>", { desc = "Prev tab" })
 
 -- BUFFERLINE
 ---- In your keymaps file or init.lua
