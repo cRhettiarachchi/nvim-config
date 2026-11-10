@@ -57,6 +57,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 local severity = vim.diagnostic.severity
 
+-- Godot embeds the GDScript language server in the editor (TCP 6005), so there
+-- is nothing to install -- but Godot must be running for it to attach.
+vim.lsp.enable "gdscript"
+
 vim.lsp.enable "codebook"
 
 vim.lsp.config("codebook", {
@@ -64,6 +68,7 @@ vim.lsp.config("codebook", {
   filetypes = {
     "c",
     "css",
+    "gdscript",
     "gitcommit",
     "go",
     "haskell",
