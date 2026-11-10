@@ -23,10 +23,14 @@ return {
         return "<Ignore>"
       end, { expr = true })
 
-      -- Actions
-      map("n", "<leader>gs", gs.stage_hunk)
-      map("n", "<leader>gu", gs.undo_stage_hunk)
-      map("n", "<leader>gp", gs.preview_hunk)
+      -- Actions, all grouped under <leader>gs(letter)
+      map("n", "<leader>gss", gs.stage_hunk)
+      map("n", "<leader>gsu", gs.undo_stage_hunk)
+      map("n", "<leader>gsp", gs.preview_hunk)
+      map("n", "<leader>gsi", gs.preview_hunk_inline)
+      map("n", "<leader>gsw", gs.toggle_word_diff)
+      map("n", "<leader>gsq", function() gs.setqflist "all" end, { desc = "All Workspace Hunks to Quickfix" })
+      map("n", "<leader>gsb", gs.toggle_current_line_blame, { desc = "Toggle Line Blame" })
     end,
   },
 }

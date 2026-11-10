@@ -17,20 +17,6 @@ keymap("n", "<leader>w=", "<C-w>=", { desc = "Equalize windows" })
 keymap("n", "<leader>tr", "<cmd>LspRestart vtsls<CR>", { desc = "Restart vtsls" })
 keymap("n", "<leader>oc", ":!google-chrome %:p &<CR><CR>", { desc = "Open file in Chrome" })
 
-keymap({ "n", "v" }, "<leader>me", "<cmd>BookmarksMark<cr>", { desc = "Mark line in BookmarkList" })
-keymap({ "n", "v" }, "<leader>mo", "<cmd>BookmarksGoto<cr>", { desc = "Go to bookmark" })
-keymap({ "n", "v" }, "<leader>ma", "<cmd>BookmarksCommands<cr>", { desc = "Bookmark commands" })
-keymap("n", "<leader>mn", "<cmd>BookmarksNewList<cr>", { desc = "New bookmark list" })
-keymap("n", "<leader>mt", "<cmd>BookmarksTree<cr>", { desc = "Bookmarks tree" })
-keymap("n", "<leader>m]", "<cmd>BookmarksGotoNextInList<cr>", { desc = "Next in bookmark list" })
-keymap("n", "<leader>m[", "<cmd>BookmarksGotoPrevInList<cr>", { desc = "Previous in bookmark list" })
-keymap(
-  { "n", "v" },
-  "md",
-  function() require("bookmarks.commands").delete_mark_of_current_file() end,
-  { desc = "Delete bookmark in file" }
-)
-
 local ok, refactoring = pcall(require, "refactoring")
 if ok then
   local refactor_keys = {

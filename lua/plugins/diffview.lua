@@ -37,7 +37,14 @@ return {
   init = function()
     vim.keymap.set({ "n", "v" }, "<leader>gd", "<cmd>DiffviewOpen<cr>", { desc = "Diff View open" })
     vim.keymap.set({ "n", "v" }, "<leader>gc", "<cmd>DiffviewClose<cr>", { desc = "Diff View close" })
-    vim.keymap.set({ "n", "v" }, "<leader>gf", "<cmd>DiffviewFileHistory<cr>", { desc = "Diff View file" })
+    vim.keymap.set({ "n", "v" }, "<leader>gD", "<cmd>DiffviewOpen -- %<cr>", { desc = "Diff View current file" })
+    vim.keymap.set({ "n", "v" }, "<leader>gf", "<cmd>DiffviewFileHistory %<cr>", { desc = "Diff View file history" })
+    vim.keymap.set(
+      { "n", "v" },
+      "<leader>gm",
+      "<cmd>DiffviewOpen main...HEAD<cr>",
+      { desc = "Diff View against main" }
+    )
 
     vim.keymap.set("n", "<leader>tc", function()
       local bufname = vim.api.nvim_buf_get_name(0)
