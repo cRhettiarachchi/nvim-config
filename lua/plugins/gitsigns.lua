@@ -1,43 +1,32 @@
--- Adds git related signs to the gutter, as well as utilities for managing changes
 return {
-  'lewis6991/gitsigns.nvim',
-  event = { 'BufReadPre', 'BufNewFile' },
-  config = function()
-    require('gitsigns').setup {
-      signs = {
-        add = { text = '┃' },
-        change = { text = '┃' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-      current_line_blame = true,
-      current_line_blame_opts = {
-        delay = 300,
-        virt_text_pos = 'eol',
-      },
-      signcolumn = true,
-    }
+  "lewis6991/gitsigns.nvim",
+  opts = {
+    on_attach = function(bufnr)
+      local gs = package.loaded.gitsigns
 
-    local gs = require 'gitsigns'
+      local function map(mode, lhs, rhs, opts)
+        opts = opts or {}
+        opts.buffer = bufnr
+        vim.keymap.set(mode, lhs, rhs, opts)
+      end
 
-    -- Git keymaps
-    -- Next and previous hunk navigation
-    vim.keymap.set('n', ']g', gs.next_hunk, { desc = 'Next Git hunk' })
-    vim.keymap.set('n', '[g', gs.prev_hunk, { desc = 'Previous Git hunk' })
+      -- Navigation (respects diff mode)
+      map("n", "]c", function()
+        if vim.wo.diff then return "]c" end
+        vim.schedule(gs.next_hunk)
+        return "<Ignore>"
+      end, { expr = true })
 
-    -- Preview hunk automatically when navigating
-    vim.keymap.set('n', '<leader>gn', function()
-      gs.next_hunk()
-      gs.preview_hunk()
-    end, { noremap = true, desc = 'Next hunk and preview' })
+      map("n", "[c", function()
+        if vim.wo.diff then return "[c" end
+        vim.schedule(gs.prev_hunk)
+        return "<Ignore>"
+      end, { expr = true })
 
-    vim.keymap.set('n', '<leader>gp', function()
-      gs.preview_hunk()
-    end, { noremap = true, desc = 'Preview hunk' })
-
-    vim.keymap.set('n', '<leader>gh', gs.stage_hunk, { desc = 'Stage Git hunk' })
-    vim.keymap.set('n', '<leader>gu', gs.undo_stage_hunk, { desc = 'Undo stage Git hunk' })
-    vim.keymap.set('n', '<leader>gb', gs.toggle_current_line_blame, { desc = 'Toggle current line blame' })
-  end,
+      -- Actions
+      map("n", "<leader>gs", gs.stage_hunk)
+      map("n", "<leader>gu", gs.undo_stage_hunk)
+      map("n", "<leader>gp", gs.preview_hunk)
+    end,
+  },
 }

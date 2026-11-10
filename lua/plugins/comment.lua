@@ -1,20 +1,73 @@
--- Easily comment visual regions/lines
+-- return {
+--   "numToStr/Comment.nvim",
+--   config = function()
+--     local prehook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook()
+
+--     require("Comment").setup {
+--       padding = true,
+--       sticky = true,
+--       ignore = "^$",
+--       toggler = {
+--         line = "<C-c>",
+--         block = "<C-b>",
+--       },
+--       opleader = {
+--         line = "gc",
+--         block = "gb",
+--       },
+--       extra = {
+--         above = "gcO",
+--         below = "gco",
+--         eol = "gcA",
+--       },
+--       mappings = {
+--         basic = true,
+--         extra = true,
+--         extended = false,
+--       },
+--       pre_hook = prehook,
+--       post_hook = nil,
+--     }
+--   end,
+--   event = "InsertEnter",
+--   lazy = true,
+--   dependencies = {
+--     "nvim-treesitter/nvim-treesitter",
+--     "JoosepAlviste/nvim-ts-context-commentstring",
+--   },
+-- }
+
 return {
-  'numToStr/Comment.nvim',
-  dependencies = {
-    'JoosepAlviste/nvim-ts-context-commentstring',
-  },
-  opts = {},
+  "numToStr/Comment.nvim",
   config = function()
-    local opts = { noremap = true, silent = true }
-    require('Comment').setup {
-      pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+    require("Comment").setup {
+      padding = true,
+      sticky = true,
+      ignore = "^$",
+      toggler = {
+        line = "<C-c>", -- Normal mode: toggle single line comment
+        block = "<C-b>", -- Normal mode: toggle block comment
+      },
+      opleader = {
+        line = "<C-c>", -- Visual mode: toggle single line comment
+        block = "<C-b>", -- Visual mode: toggle block comment
+      },
+      extra = {
+        above = "gcO",
+        below = "gco",
+        eol = "gcA",
+      },
+      mappings = {
+        basic = true,
+        extra = true,
+      },
+      pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
     }
-    vim.keymap.set('n', '<C-_>', require('Comment.api').toggle.linewise.current, opts)
-    vim.keymap.set('n', '<C-c>', require('Comment.api').toggle.linewise.current, opts)
-    vim.keymap.set('n', '<C-/>', require('Comment.api').toggle.linewise.current, opts)
-    vim.keymap.set('v', '<C-_>', "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>", opts)
-    vim.keymap.set('v', '<C-c>', "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>", opts)
-    vim.keymap.set('v', '<C-/>', "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>", opts)
   end,
+  event = { "BufReadPost", "BufNewFile" },
+  lazy = true,
+  dependencies = {
+    "nvim-treesitter/nvim-treesitter",
+    "JoosepAlviste/nvim-ts-context-commentstring",
+  },
 }

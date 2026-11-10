@@ -1,148 +1,97 @@
--- Set leader key
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
-
--- Disable the spacebar key's default behavior in Normal and Visual modes
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
-
--- For conciseness
 local opts = { noremap = true, silent = true }
 
--- save file
-vim.keymap.set('n', '<C-s>', '<cmd> w <CR>', opts)
+local function keymap(mode, lhs, rhs, extra)
+  return vim.keymap.set(mode, lhs, rhs, vim.tbl_extend("force", opts, extra or {}))
+end
 
--- save file without auto-formatting
-vim.keymap.set('n', '<leader>sn', '<cmd>noautocmd w <CR>', opts)
+keymap({ "n", "v" }, "<C-s>", "<cmd>w<CR>", { desc = "Save file" })
+keymap("n", "x", '"_x', { desc = "Delete char without yank" })
+keymap("v", "p", '"_dP', { desc = "Paste over selection, keep yank" })
+keymap("n", "<C-d>", "<C-d>zz", { desc = "Scroll down and center" })
+keymap("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
 
--- quit file
-vim.keymap.set('n', '<C-q>', '<cmd> q <CR>', opts)
+keymap("n", "<leader>v", "<cmd>vsplit<CR>", { desc = "Vertical split" })
+keymap("n", "<leader>h", "<cmd>split<CR>", { desc = "Horizontal split" })
+keymap("n", "<leader>w=", "<C-w>=", { desc = "Equalize windows" })
 
--- delete single character without copying into register
-vim.keymap.set('n', 'x', '"_x', opts)
+keymap("n", "<leader>tr", "<cmd>LspRestart vtsls<CR>", { desc = "Restart vtsls" })
+keymap("n", "<leader>oc", ":!google-chrome %:p &<CR><CR>", { desc = "Open file in Chrome" })
 
--- Vertical scroll and center
-vim.keymap.set('n', '<C-d>', '<C-d>zz', opts)
-vim.keymap.set('n', '<C-u>', '<C-u>zz', opts)
+keymap({ "n", "v" }, "<leader>me", "<cmd>BookmarksMark<cr>", { desc = "Mark line in BookmarkList" })
+keymap({ "n", "v" }, "<leader>mo", "<cmd>BookmarksGoto<cr>", { desc = "Go to bookmark" })
+keymap({ "n", "v" }, "<leader>ma", "<cmd>BookmarksCommands<cr>", { desc = "Bookmark commands" })
+keymap("n", "<leader>mn", "<cmd>BookmarksNewList<cr>", { desc = "New bookmark list" })
+keymap("n", "<leader>mt", "<cmd>BookmarksTree<cr>", { desc = "Bookmarks tree" })
+keymap("n", "<leader>m]", "<cmd>BookmarksGotoNextInList<cr>", { desc = "Next in bookmark list" })
+keymap("n", "<leader>m[", "<cmd>BookmarksGotoPrevInList<cr>", { desc = "Previous in bookmark list" })
+keymap(
+  { "n", "v" },
+  "md",
+  function() require("bookmarks.commands").delete_mark_of_current_file() end,
+  { desc = "Delete bookmark in file" }
+)
 
--- Find and center
-vim.keymap.set('n', 'n', 'nzzzv', opts)
-vim.keymap.set('n', 'N', 'Nzzzv', opts)
-
--- Resize with arrows
-vim.keymap.set('n', '<Up>', ':resize -2<CR>', opts)
-vim.keymap.set('n', '<Down>', ':resize +2<CR>', opts)
-vim.keymap.set('n', '<Left>', ':vertical resize -2<CR>', opts)
-vim.keymap.set('n', '<Right>', ':vertical resize +2<CR>', opts)
-
--- Buffers
-vim.keymap.set('n', '<Tab>', ':bnext<CR>', opts)
-vim.keymap.set('n', '<S-Tab>', ':bprevious<CR>', opts)
-vim.keymap.set('n', '<leader>x', function()
-  local current_buf = vim.api.nvim_get_current_buf()
-  local alternate_buf = vim.fn.bufnr '#' -- previous buffer
-
-  -- Count the number of listed buffers
-  local listed = vim.tbl_filter(function(buf)
-    return vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_option(buf, 'buflisted')
-  end, vim.api.nvim_list_bufs())
-
-  if #listed > 1 and vim.api.nvim_buf_is_loaded(alternate_buf) then
-    vim.cmd 'b#' -- go to previous buffer
-    vim.cmd('bdelete ' .. current_buf) -- delete the old one
-  else
-    -- Create a new empty buffer and switch to it
-    vim.cmd 'enew' -- create an empty buffer
-    vim.cmd('bdelete ' .. current_buf)
+local ok, refactoring = pcall(require, "refactoring")
+if ok then
+  local refactor_keys = {
+    { "re", "Extract Function" },
+    { "rf", "Extract Function To File" },
+    { "rv", "Extract Variable" },
+    { "rI", "Inline Function" },
+    { "ri", "Inline Variable" },
+    { "rbb", "Extract Block" },
+    { "rbf", "Extract Block To File" },
+  }
+  for _, pair in ipairs(refactor_keys) do
+    local lhs, name = pair[1], pair[2]
+    keymap(
+      { "n", "x" },
+      "<leader>" .. lhs,
+      function() return refactoring.refactor(name) end,
+      { expr = true, desc = "Refactor: " .. name }
+    )
   end
-end, { desc = 'Smart buffer close', noremap = true, silent = true })
-vim.keymap.set('n', '<leader>b', '<cmd> enew <CR>', opts) -- new buffer
+end
 
--- Window management
-vim.keymap.set('n', '<leader>v', '<C-w>v', opts) -- split window vertically
-vim.keymap.set('n', '<leader>h', '<C-w>s', opts) -- split window horizontally
-vim.keymap.set('n', '<leader>se', '<C-w>=', opts) -- make split windows equal width & height
-vim.keymap.set('n', '<leader>cs', ':close<CR>', opts) -- close current split window
+keymap("v", "<leader>ol", function()
+  local start_line = vim.fn.line "v"
+  local end_line = vim.fn.line "."
+  if start_line > end_line then
+    start_line, end_line = end_line, start_line
+  end
+  local result = vim.fn.expand "%:p" .. ":" .. start_line .. "-" .. end_line
+  vim.fn.setreg("+", result)
+  vim.notify("Copied: " .. result)
+end, { desc = "Copy filepath:lines for OpenCode" })
 
--- Navigate between splits
-vim.keymap.set('n', '<C-k>', ':wincmd k<CR>', opts)
-vim.keymap.set('n', '<C-j>', ':wincmd j<CR>', opts)
-vim.keymap.set('n', '<C-h>', ':wincmd h<CR>', opts)
-vim.keymap.set('n', '<C-l>', ':wincmd l<CR>', opts)
+keymap("n", "<leader>cp", function()
+  local path = vim.fn.expand "%:."
+  vim.fn.setreg("+", path)
+  vim.notify("Copied: " .. path)
+end, { desc = "Copy relative path" })
 
--- Tabs
-vim.keymap.set('n', '<leader>nto', ':tabnew<CR>', opts) -- open new tab
-vim.keymap.set('n', '<leader>tx', ':tabclose<CR>', opts) -- close current tab
-vim.keymap.set('n', '<leader>tn', ':tabn<CR>', opts) --  go to next tab
-vim.keymap.set('n', '<leader>tp', ':tabp<CR>', opts) --  go to previous tab
+keymap("n", "<leader>al", function()
+  local ref = "@" .. vim.fn.expand "%:." .. "#L" .. vim.fn.line "."
+  vim.fn.setreg("+", ref)
+  vim.notify("Copied: " .. ref)
+end, { desc = "Copy @file#L ref for agent" })
 
--- Toggle line wrapping
-vim.keymap.set('n', '<leader>lw', '<cmd>set wrap!<CR>', opts)
+keymap("v", "<leader>al", function()
+  local s = vim.fn.line "v"
+  local e = vim.fn.line "."
+  if s > e then s, e = e, s end
+  local ref = "@" .. vim.fn.expand "%:." .. "#L" .. s .. "-" .. e
+  vim.fn.setreg("+", ref)
+  vim.notify("Copied: " .. ref)
+end, { desc = "Copy @file#L range ref for agent" })
 
--- Stay in indent mode
-vim.keymap.set('v', '<', '<gv', opts)
-vim.keymap.set('v', '>', '>gv', opts)
+-- TABS
+keymap("n", "]t", "<cmd>tabnext<CR>", { desc = "Next tab" })
+keymap("n", "[t", "<cmd>tabprev<CR>", { desc = "Prev tab" })
 
--- Keep last yanked when pasting
-vim.keymap.set('v', 'p', '"_dP', opts)
-
--- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
-
-vim.keymap.set('n', '<leader>cd', ':%bd | e# | bd#<CR>', opts)
-
-vim.keymap.set('n', '<leader>of', ':!open -R %<CR>', opts)
-
-vim.keymap.set('n', '<leader>nr', ':set relativenumber<CR>', opts)
-
-vim.keymap.set('n', '<leader>cp', function()
-  local path = vim.fn.expand '%:p:h'
-  vim.fn.setreg('+', path)
-  print('Copied to clipboard: ' .. path)
-end, { desc = 'Copy current file directory to clipboard' })
-
-vim.keymap.set('n', '<leader>i', function()
-  vim.o.ignorecase = not vim.o.ignorecase
-  vim.o.smartcase = vim.o.ignorecase -- Enable smartcase only when ignorecase is on
-  print('ignorecase: ' .. tostring(vim.o.ignorecase) .. ', smartcase: ' .. tostring(vim.o.smartcase))
-end, { desc = 'Toggle ignorecase + smartcase' })
-
--- Swap buffer with the pane to the right
-vim.keymap.set('n', '<leader>ml', function()
-  local cur_buf = vim.fn.bufnr '%'
-  local cur_win = vim.api.nvim_get_current_win()
-
-  vim.cmd 'wincmd l' -- go to right pane
-  local right_buf = vim.fn.bufnr '%'
-  local right_win = vim.api.nvim_get_current_win()
-
-  -- Set current buffer into right window
-  vim.api.nvim_set_current_buf(cur_buf)
-
-  -- Go back and set right buffer into current window
-  vim.api.nvim_set_current_win(cur_win)
-  vim.api.nvim_set_current_buf(right_buf)
-end, { desc = 'Swap buffer with right pane' })
-
--- Swap buffer with the pane to the left
-vim.keymap.set('n', '<leader>mh', function()
-  local cur_buf = vim.fn.bufnr '%'
-  local cur_win = vim.api.nvim_get_current_win()
-
-  vim.cmd 'wincmd h' -- go to left pane
-  local left_buf = vim.fn.bufnr '%'
-  local left_win = vim.api.nvim_get_current_win()
-
-  -- Set current buffer into left window
-  vim.api.nvim_set_current_buf(cur_buf)
-
-  -- Go back and set left buffer into current window
-  vim.api.nvim_set_current_win(cur_win)
-  vim.api.nvim_set_current_buf(left_buf)
-end, { desc = 'Swap buffer with left pane' })
-
-vim.keymap.set('n', '<leader>dcl', function()
-  vim.cmd [[g/console\.log/d]]
-end, { desc = 'Delete all console.log lines' })
+-- BUFFERLINE
+---- In your keymaps file or init.lua
+vim.keymap.set("n", "<Tab>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
+vim.keymap.set("n", "<leader>x", "<cmd>bdelete<CR>", { desc = "Close buffer" })
+vim.keymap.set("n", "<leader>X", "<cmd>BufferLineCloseOthers<CR>", { desc = "Close other buffers" })
+vim.keymap.set("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Prev buffer" })
