@@ -48,3 +48,12 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*",
   callback = function(args) require("conform").format { bufnr = args.buf } end,
 })
+
+-- Wrap long lines in the quickfix window, breaking at word boundaries
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "qf",
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true
+  end,
+})
