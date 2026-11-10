@@ -9,6 +9,13 @@ return {
     { "stevearc/dressing.nvim" }, -- optional: better UI
     { "GeorgesAlkhouri/nvim-aider" }, -- optional: for Aider integration
   },
+  init = function()
+    -- sqlite.lua defaults to a Homebrew sqlite keg that isn't installed here.
+    -- Point it at the system SQLite instead (must be set before the plugin loads).
+    if vim.fn.has("mac") == 1 then
+      vim.g.sqlite_clib_path = "/usr/lib/libsqlite3.dylib"
+    end
+  end,
   config = function()
     local opts = {} -- check the "./lua/bookmarks/default-config.lua" file for all the options
     require("bookmarks").setup(opts) -- you must call setup to init sqlite db

@@ -24,6 +24,8 @@ return {
           "prettierd", -- Faster prettier
           "prettier", -- Fallback formatter
           "eslint_d", -- Faster ESLint
+          "gdtoolkit", -- gdformat + gdlint for GDScript
+          "tree-sitter-cli", -- required by nvim-treesitter `main` to build parsers
         },
       },
     },
