@@ -1,7 +1,11 @@
 return {
   "cRhettiarachchi/nvim-c-bookmarks",
   lazy = false,
-  opts = {},
+  opts = {
+    ai = {
+      provider = "codex",
+    },
+  },
   keys = {
     { "<leader>mz", function() require("c-bookmarks").toggle() end, mode = { "n", "v" }, desc = "Bookmark: toggle" },
     {
@@ -25,6 +29,7 @@ return {
       desc = "Bookmark: explain with AI",
     },
     { "<leader>mo", function() require("c-bookmarks").explain_model() end, desc = "Bookmark: pick AI model" },
+    { "<leader>mP", function() require("c-bookmarks").explain_provider() end, desc = "Bookmark: pick AI provider" },
     { "<leader>mq", function() require("c-bookmarks").ask() end, mode = { "n", "v" }, desc = "Bookmark: ask AI" },
     {
       "<leader>ms",
