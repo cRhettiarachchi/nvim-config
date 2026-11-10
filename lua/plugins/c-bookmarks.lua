@@ -1,6 +1,5 @@
 return {
-  dir = "~/Documents/projects/nvim-c-bookmarks",
-  name = "nvim-c-bookmarks",
+  "cRhettiarachchi/nvim-c-bookmarks",
   lazy = false,
   opts = {},
   keys = {
